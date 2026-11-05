@@ -9,7 +9,7 @@ Here’s a list of what Super Scaffolding takes care of for you each time you ad
  - It generates type-specific form fields for each attribute of the model.
  - It generates an API controller and an accompanying entry in the application’s API docs.
  - It generates a serializer that’s used by the API and when dispatching webhooks.
- - It adds the appropriate permissions for multitenancy in CanCanCan’s configuration file.
+ - It adds the appropriate permissions for multitenancy to `config/models/roles.yml`, which Bullet Train turns into CanCanCan abilities.
  - It adds the model’s table view to the show view of its parent.
  - It adds the model to the application’s navigation (if applicable).
  - It generates breadcrumbs for use in the application’s layout.
@@ -29,11 +29,9 @@ Before getting started with Super Scaffolding, we recommend reading about [the p
 
 ## Usage
 
-The Super Scaffolding shell script provides its own documentation. If you're curious about specific scaffolders or parameters, you can run the following in your shell:
+Super Scaffolding is a set of Rails generators, and each one documents itself. To see the arguments, options and an example for a scaffolder, run it with `--help`, e.g. `rails generate super_scaffold --help` or `rails generate super_scaffold:field --help`.
 
-```
-rails generate super_scaffold
-```
+> `bin/super-scaffold` (e.g. `bin/super-scaffold crud Project Team name:text_field`) is deprecated. It forwards to the matching `rails generate super_scaffold...` command and prints a warning.
 
 ## Available Scaffolding Types
 
@@ -41,7 +39,7 @@ rails generate super_scaffold
 |--------------------------|------------------|
 | `rails generate super_scaffold` | Basic CRUD scaffolder |
 | `rails generate super_scaffold:field` | Adds a field to an existing model |
-| `rails generate super_scaffold:incoming_webhook` | Scaffolds an incoming webhook |
+| `rails generate super_scaffold:incoming_webhooks` | Scaffolds an incoming webhook |
 | `rails generate super_scaffold:join_model` | Scaffolds a join model (must have two existing models to join before scaffolding) |
 | `rails generate super_scaffold:oauth_provider` | Scaffolds logic to use OAuth2 with the provider of your choice |
 
@@ -52,6 +50,17 @@ The following commands are for use specifically with [Action Models](action-mode
 | `rails generate super_scaffold:action_models:targets_many` | Generates an action that targets many records |
 | `rails generate super_scaffold:action_models:targets_one` | Generates an action that targets one record |
 | `rails generate super_scaffold:action_models:targets_one_parent` | Generates an action that targets the parent of the specified model |
+| `rails generate super_scaffold:action_models:performs_import` | Generates an action that imports a list of records (e.g. from a CSV) to its parent |
+| `rails generate super_scaffold:action_models:performs_export` | Generates an action that exports a list of records |
+
+The following commands are only available when the corresponding optional gem is installed.
+
+| `rails generate` Command | Scaffolding Type |
+|--------------------------|------------------|
+| `rails generate super_scaffold:audit_logs` | Adds an audit log to a model (requires the Audit Logs gem) |
+| `rails generate super_scaffold:conversations` | Adds conversations to a model (requires the Conversations gem) |
+
+Flags such as `--skip-migration-generation` and `--sortable` are covered in [Super Scaffolding Options](/docs/super-scaffolding/options.md).
 
 ## Examples
 
@@ -117,7 +126,7 @@ rake db:migrate
 
 As you can see, when we're using `field`, we don't need to supply the chain of ownership back to `Team`.
 
-If you want to scaffold a new field to use for read-only purposes, add the following option to omit the field from the form and all other files that apply:
+If you want to scaffold a new field to use for read-only purposes, add the `readonly` option. The field is left out of the form and out of strong parameters, but it is still added to the show view, table view, locale file and API serializer:
 ```
 rails generate super_scaffold:field Project description:trix_editor{readonly}
 ```
@@ -174,7 +183,7 @@ There are three important things to point out here:
 
 1. The scaffolder automatically adds a foreign key for `lead` to `Project`.
 2. When adding this foreign key the `references` column is generated under the name `lead`, but when we're specifying the _field_ we want to scaffold, we specify it as `lead_id`, because that's the name of the attribute on the form, in strong parameters, etc.
-3. We have to specify the model name with the `class_name` option so that Super Scaffolding can fully work it's magic. We can't reflect on the association, because at this point the association isn't properly defined yet. With this information, Super Scaffolding can handle that step for you.
+3. We have to specify the model name with the `class_name` option so that Super Scaffolding can fully work its magic. We can't reflect on the association, because at this point the association isn't properly defined yet. With this information, Super Scaffolding can handle that step for you.
 
 Finally, Super Scaffolding will prompt you to edit `app/models/project.rb` and implement the required logic in the `valid_leads` method. This is a template method that will be used to both populate the select field on the `Project` form, but also enforce some important security concerns in this multi-tenant system. In this case, you can define it as:
 
@@ -187,7 +196,7 @@ end
 (The `current_and_invited` scope just filters out people that have already been removed from the team.)
 
 **NOTE:** It's possible to define the source for `valid_leads` in your super scaffolding command.
-You need to wrap the bits inside the curly brackets with double qoutes, and then add
+You need to wrap the bits inside the curly brackets with double quotes, and then add
 `,source=team.memberships.current_and_invited` inside the quotes:
 
 ```
@@ -250,7 +259,7 @@ Honestly, it's crazy that we got to the point where we can handle this particula
 Bullet Train comes with two different ways to handle image uploads.
 
 * Cloudinary - This option allows your app deployment to be simpler because you don't need to ship any image manipulation libraries. But it does introduce a dependence on a 3rd party service.
-* ActiveStorage - This option doesn't include reliance on a 3rd party service, but you do have to include image manipulation libararies in your deployment process.
+* ActiveStorage - This option doesn't include reliance on a 3rd party service, but you do have to include image manipulation libraries in your deployment process.
 
 #### Scaffolding images with Cloudinary
 
@@ -268,8 +277,7 @@ rake db:migrate
 
 Under the hood, Bullet Train will generate your model with the following command:
 ```
-rails generate super_scaffold Project Team name:text_field
-rake db:migrate
+bin/rails generate model Project team:references name:string logo:string
 ```
 
 #### Scaffolding images with ActiveStorage
@@ -286,9 +294,26 @@ rake db:migrate
 
 Under the hood, Bullet Train will generate your model with the following command:
 ```
-rails generate super_scaffold Project Team name:text_field
-rake db:migrate
+bin/rails generate model Project team:references name:string logo:attachment
 ```
+
+## Attribute Options
+
+Each attribute can take options in curly braces after its type, e.g. `lead_id:super_select{class_name=Membership}`. Separate several options with commas and wrap the whole value in double quotes, as in the `source` example in section 5 above.
+
+| Option | Description |
+|--------|-------------|
+| `{class_name=Foo}` | The model on the other side of an `_id` or `_ids` attribute. Required when it can't be inferred from the attribute name. |
+| `{source=expr}` | The body of the generated `valid_*` method for an `_id` or `_ids` attribute. The expression can't contain a comma or `=`, because options are split on both. |
+| `{vanilla}` | Treat an attribute ending in `_id` or `_ids` as a plain attribute, with no association magic. |
+| `{multiple}` | Allow multiple values for `buttons`, `options`, `super_select` (stored as `jsonb`), and for `file_field` and `image` (stored as `attachments`). Not supported for `image` when Cloudinary is enabled. |
+| `{required}` | Adds `validates :attribute, presence: true` to the model. For `_id` attributes it drops `optional: true` from the `belongs_to` instead, and `file_field` is never required. The first attribute of a newly scaffolded model is always required. |
+| `{readonly}` | Leaves the field out of the form and strong parameters. See the `readonly` example in section 3. |
+| `{label=method}` | The method called on the associated records to build option labels. Defaults to `label_string`. |
+| `{language=ruby}` | The language used by a `code_editor` field. |
+| `{attribute=partial}` | Overrides the `shared/attributes/*` partial used to display the attribute on show and table views. |
+
+The first attribute of a newly scaffolded model can't be a `trix_editor`, `ckeditor`, `text_area` or `code_editor` field.
 
 ## Additional Notes
 

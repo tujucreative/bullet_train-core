@@ -4,22 +4,22 @@ Note: before you attempt to manually wire up a `super_select` field, note that S
 
 The `super_select` partial provides a wonderful default UI (in contrast to the vanilla browser experience for select boxes, which is horrible) with optional search and multi-select functionality out-of-the-box. It invokes the [Select2][select2] library to provide you these features.
 
-## Define Available Buttons via Localization Yaml
+## Define Available Options via Localization Yaml
 
-If you invoke the field partial in `app/views/account/some_class_name/_form.html.erb` like so:
+If you invoke the field partial in `app/views/account/some_class_names/_form.html.erb` like so:
 
 <pre><code><%= render 'shared/fields/super_select', form: form, method: :response_behavior %></code></pre>
 
-You can define the available options in `config/locales/en/some_class_name.en.yml` like so:
+You can define the available options in `config/locales/en/some_class_names.en.yml` like so:
 
 <pre><code>en:
-  some_class_name:
+  some_class_names:
     fields:
       response_behavior:
-        name: &response_behavior Response Behavior
+        _: &response_behavior Response Behavior
         label: When should this object respond to new submissions?
         heading: Responds
-        choices:
+        options:
           immediate: Immediately
           after_10_minutes: After a 10 minute delay
           disabled: Doesn't respond
@@ -36,10 +36,30 @@ Although it's recommended to define any static list of choices in the localizati
 
 ## Generate Choices Programmatically
 
-You can generate the available buttons using a collection of database objects by passing the `options` option like so:
+You can generate the available options using a collection of database objects by passing the `choices` option like so:
 
 <pre><code><%= render 'shared/fields/super_select', form: form, method: :category_id,
   choices: Category.all.map { |category| [category.label_string, category.id] } %></code></pre>
+
+## Loading Choices over AJAX
+
+Instead of rendering every choice up front, you can have `super_select` fetch choices lazily from an endpoint by passing the `choices_url` option:
+
+<pre><code><%= render 'shared/fields/super_select', form: form, method: :category_id,
+  choices_url: categories_search_path, other_options: {search: true} %></code></pre>
+
+Here `categories_search_path` stands for a route you define yourself. The `method` must end in `_id`, because the partial strips `_id` from it to find the association. Search is off by default, so pass `other_options: {search: true}` if you want the user to be able to type a search term.
+
+With `choices_url`, `choices` and the localization Yaml options are ignored. Only the currently selected record (the association behind `method`, labeled with its `label_string`) is rendered initially. As the user scrolls (and types, when search is enabled), the Stimulus controller sends `GET <choices_url>?search=<term>&page=<n>` and passes the response to Select2 unchanged (no `processResults` is configured), so the endpoint must return JSON in [Select2's default format](https://select2.org/data-sources/ajax):
+
+```json
+{
+  "results": [{"id": 1, "text": "First choice"}, {"id": 2, "text": "Second choice"}],
+  "pagination": {"more": false}
+}
+```
+
+Set `pagination.more` to `true` while more pages remain. Bullet Train doesn't ship an endpoint for this, so you need to write the controller action yourself.
 
 ## Allowing Multiple Option Selections
 
@@ -68,7 +88,7 @@ false` will override the automatic setting of the timezone value from the
 browser.
 
 
-Here is the an example setting the selected value to `@user.time_zone` which
+Here is an example setting the selected value to `@user.time_zone` which
 will not be overridden by the browser time zone.
 
 <pre><code><%= render 'shared/fields/super_select', form: f, method: :time_zone,
@@ -141,7 +161,7 @@ For an example of catching the `$change` event to update a dependent field, look
 ## Options
 Select2 has different options available which you can check [here](https://select2.org/configuration/options-api).
 
-You can pass these options to the super select partial like so:
+You can pass these options to the super select partial like so:*
 ```erb
 <%= render 'shared/fields/super_select', method: :project,
   select2_options: {

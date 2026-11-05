@@ -6,7 +6,7 @@ Webhooks allow for users to be notified via HTTP request when activity takes pla
 ## Default Event Types
 Bullet Train can deliver webhooks for any model you've added under `Team`. We call the model a webhook is being issued for the "subject".
 
-An "event type" is a subject plus an action. By default, every model includes `created`, `updated`, and `destroyed` event types. These are easy for us to implement automatically because of [Active Record Callbacks](https://guides.rubyonrails.org/active_record_callbacks.html).
+An "event type" is a subject plus an action. By default, every model includes `created`, `updated`, and `deleted` event types. These are easy for us to implement automatically because of [Active Record Callbacks](https://guides.rubyonrails.org/active_record_callbacks.html).
 
 ## Custom Event Types
 You can make custom event types available for subscription by adding them to `config/models/webhooks/outgoing/event_types.yml`. For example:
@@ -18,6 +18,8 @@ payment:
   - failed
 ```
 
+`crud` is shorthand for `created`, `updated` and `deleted`. The top-level key is the model's underscored class name, e.g. `scaffolding/completely_concrete/tangible_thing: [crud]`.
+
 Once the event type is configured, you can make your code actually issue the webhook like so:
 
 ```ruby
@@ -25,10 +27,13 @@ payment.generate_webhook(:succeeded)
 ```
 
 ## Delivery
-Webhooks are delivered asynchronously in a background job by default. If the resulting HTTP request results in a status code other than those in the 2XX series, it will be considered a failed attempt and delivery will be reattempted a number of times.
+Webhooks are delivered asynchronously in a background job by default. If the response status is not one of 200-207 or 226 it is a failed attempt. Failed deliveries are reattempted after 15 seconds, 1 minute, 5 minutes, 15 minutes, 1 hour and 24 hours (six reattempts, about 25 hours in total).
 
 ## Security
 Your outgoing webhook events come with a signature that your users can verify on the receiving end. More info in the [Security section of the Incoming Webhooks docs](./incoming.md#security)
+
+## Destination Filtering
+Outgoing webhook URLs are checked against `config.outgoing_webhooks`: private, loopback and link-local ranges (`blocked_cidrs`) and `localhost` (`blocked_hostnames`) are blocked by default; only `http`/`https` are allowed (`allowed_schemes`). Use `allowed_cidrs` / `allowed_hostnames` to permit specific targets (e.g. in development), and `custom_block_callback`, `custom_allow_callback` and `audit_callback` to customise. `webhook_headers_namespace` (default `X-Webhook-Bullet-Train`) and `event_verification_tolerance_seconds` (default 600) control signature headers and replay tolerance.
 
 ## Endpoint Deactivation
 

@@ -1,6 +1,6 @@
 # Incoming Webhooks
 
-Bullet Train makes it trivial to scaffold new endpoints where external systems can send you webhooks and they can be processed asyncronously in a background job. For more information, run:
+Bullet Train makes it trivial to scaffold new endpoints where external systems can send you webhooks and they can be processed asynchronously in a background job. For more information, run:
 
 ```
 rails generate super_scaffold:incoming_webhooks
@@ -49,6 +49,12 @@ rails g controller BulletTrainWebhooks create
 
 You'll also want to copy Bullet Train's `BulletTrain::OutgoingWebhooks::Signature` class into your project. [You can find the current implementation here.](https://github.com/bullet-train-co/bullet_train-core/blob/main/bullet_train-outgoing_webhooks/lib/bullet_train/outgoing_webhooks/signature.rb)
 
+`Signature` reads two settings from `Rails.configuration.outgoing_webhooks`. If the receiving app is not a Bullet Train app, add the following to its `config/application.rb` (Bullet Train apps already define them, so don't override them there):
+
+```ruby
+config.outgoing_webhooks = {webhook_headers_namespace: "X-Webhook-Bullet-Train", event_verification_tolerance_seconds: 600}
+```
+
 After adding `BulletTrain::OutgoingWebhooks::Signature` to your project you can edit `app/controllers/bullet_train_webhooks_controller.rb` to add a `before_action :verify_authenticity` call that looks like this:
 
 ```ruby
@@ -56,7 +62,7 @@ before_action :verify_authenticity, only: [:create]
 
 def verify_authenticity
   unless BulletTrain::OutgoingWebhooks::Signature.verify_request(request, ENV["BULLET_TRAIN_WEBHOOK_SECRET"])
-    # Respond with an error code and message that you usually have for non-existent endpoints.`
+    # Respond with an error code and message that you usually have for non-existent endpoints.
     render json: {error: "Not found"}, status: :not_found
   end
 end
@@ -64,14 +70,14 @@ end
 
 ## Other apps receiving webhooks from a Bullet Train app
 
-Apps in other languages and frameworks will need to port the code from `bullet_train-core/bullet_train-outgoing_webhooks/lib/bullet_train/outgoing_webhooks/signature.rb` in this particular language/framework similarly to how it's described in the previous section for Rails apps. You would need to provide the verification code to your users or ask them to take the example of the `signature.rb` Ruby code. If you do so, please let us know so we can add more tried and tested examples here.
+Apps in other languages and frameworks will need to port the code from `bullet_train-core/bullet_train-outgoing_webhooks/lib/bullet_train/outgoing_webhooks/signature.rb` in this particular language/framework similarly to how it's described in the previous section for Rails apps. Each request carries `X-Webhook-Bullet-Train-Signature` and `X-Webhook-Bullet-Train-Timestamp` headers. The signature is the hex HMAC-SHA256, keyed with the endpoint's `webhook_secret`, of the string `"<timestamp>.<raw request body>"`. Compare it in constant time and reject timestamps more than 600 seconds (the default) away from the current time. You would need to provide the verification code to your users or ask them to take the example of the `signature.rb` Ruby code. If you do so, please let us know so we can add more tried and tested examples here.
 
 ## Other, less secure, ways to verify authenticity
 
 Sometimes, platforms that send outgoing webhook events don't have a signature verification mechanism. In this case, you can fall back to other less secure ways of verifying that it's not a random person sending something to your endpoint that is open to the Internet when you do:
 
 ```
-rails generate super_scaffold: incoming_webhooks LessSecureApp
+rails generate super_scaffold:incoming_webhooks LessSecureApp
 ```
 
 1. If you know the IP addresses the events will come from, you can check for them when receiving the events.
@@ -80,11 +86,11 @@ rails generate super_scaffold: incoming_webhooks LessSecureApp
 
 Here are some examples of how you would implement those less secure options if you would not have the signature verification option.
 
-In the examples below, we will raise an error when there is an issue with the verification. This is for your error tracking. You will usually handle this error in the create action to return a message and status code that you would usually return for non-existent endpoints.
+In the examples below, we will raise an error when there is an issue with the verification. This is for your error tracking. `UnverifiedDomainError` and `InvalidSecretError` are not defined by Bullet Train, so define them in your app (for example `class UnverifiedDomainError < StandardError; end` and `class InvalidSecretError < StandardError; end`) or raise a plain `RuntimeError` instead. You will usually handle this error in the create action to return a message and status code that you would usually return for non-existent endpoints.
 
 ### Verifying IP addresses
 
-Given an env var that you populated with the expected IPs `LESS_SECURE_APP_IP_ALLOWLIST=4.311.354.505,62.9.433.116`, you could write the following code in `app/controllers/webhooks/incoming/less_secure_app_webhooks_controller.rb`:
+Given an env var that you populated with the expected IPs `LESS_SECURE_APP_IP_ALLOWLIST=203.0.113.10,198.51.100.7`, you could write the following code in `app/controllers/webhooks/incoming/less_secure_app_webhooks_controller.rb`:
 
 ```ruby
 before_action :verify_source_ip, only: [:create]
@@ -117,7 +123,7 @@ def verify_endpoint_secret_param
   provided_secret = params[:secret]
 
   if expected_secret.blank?
-    raise InvalidSecretError, "Not ready to accept ClickFunnels webhooks because no endpoint secret is configured."
+    raise InvalidSecretError, "Not ready to accept LessSecureApp webhooks because no endpoint secret is configured."
   end
 
   unless provided_secret.present? && ActiveSupport::SecurityUtils.secure_compare(provided_secret, expected_secret)

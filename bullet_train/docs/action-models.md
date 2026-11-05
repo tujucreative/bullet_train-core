@@ -42,7 +42,7 @@ end
 
 ## Installation
 
-We recently fully open-sourced our PRO-level features, but haven't yet merged these projects into our core repo. Until we do, you can install the action-model gem via git.
+The `bullet_train-action_models` gem is not part of `bullet_train-core`. Install it from its Git repository:
 
 ```
 # Below the comment labelled YOUR GEMS in your Gemfile
@@ -99,7 +99,7 @@ For example:
 
 ```
 # side quest: update the generated migration with `default: false` on the new boolean field.
-rails g super_scaffold:crud_field Projects::ArchiveAction notify_users:boolean
+rails g super_scaffold:field Projects::ArchiveAction notify_users:boolean
 ```
 
 Now users will be prompted with that option when they perform this action, and you can update your logic to take action based on it, or at least pass on the information to another method that takes action based on it:

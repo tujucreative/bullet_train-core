@@ -11,7 +11,7 @@ The images that we publish are layered to give us flexibility in how final image
 * `bullet_train/base` - This is the most basic image, and it contains only _runtime_ dependencies
   that are needed for any/all reasonable use of a Bullet Train app. It contains things like `ruby`,
   a postgres client, and image manipulation libraries.
-* `bullet_train/build` - This image builds upon `base` and included dependencies needed to build the
+* `bullet_train/build` - This image builds upon `base` and includes dependencies needed to build the
   app, but not to run it. Specifically it adds `node` which is required for building assets, but
   is not needed at runtime.
 * `bullet_train/dev` - This image starts with `build` and adds dependencies that are needed in
@@ -28,13 +28,13 @@ You can find the packages here: <https://github.com/orgs/bullet-train-co/package
 You can install one of the images directly by doing something like this:
 
 ```
-docker pull ghcr.io/bullet-train-co/bullet_train/base:1.27.0
+docker pull ghcr.io/bullet-train-co/bullet_train/base:1.45.1
 ```
 
 And in a `Dockerfile` you can do this:
 
 ```
-FROM ghcr.io/bullet-train-co/bullet_train/base:1.27.0
+FROM ghcr.io/bullet-train-co/bullet_train/base:1.45.1
 ```
 
 ## Application Images
@@ -47,10 +47,10 @@ We include two `Dockerfile`s in the starter repo:
 
 ## `Dockerfile`
 
-The main `Dockerfile` in a Bulle Train app is a two-stage file that's intented to produce a production-ready image.
+The main `Dockerfile` in a Bullet Train app is a two-stage file that's intended to produce a production-ready image.
 
 The first stage is based on `bullet_train/build`. In this stage there is a block where you can install any native
-**built-time** dependencies needed by your app. (Most apps probably won't need to install anything in this stage.)
+**build-time** dependencies needed by your app. (Most apps probably won't need to install anything in this stage.)
 
 The second stage is based on `bullet_train/base` and is intended to be the smallest possible image that can be
 shipped to production. In this stage there is a block where you can install any custom **runtime** dependencies you need.

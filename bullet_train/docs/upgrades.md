@@ -29,7 +29,7 @@ then each individual update should be relatively small.
 For performing the upgrade you have two options:
 
 * [Use the GitHub Action we provide to create an upgrade Pull Request](./upgrades#github-action)
-* [Performa a manual upgrade via git](./upgrades#manual-upgrade)
+* [Perform a manual upgrade via git](./upgrades#manual-upgrade)
 
 ## GitHub Action
 
@@ -143,6 +143,8 @@ git commit -m "Upgrading Bullet Train to v1.4.1."
 ```
 
 ### 6. Run Tests.
+
+If the merge changed `package.json`, run `yarn install`. If it changed `.ruby-version` or `.nvmrc`, install those versions. Run `bin/rails db:migrate` to apply any new migrations, then run the tests.
 
 ```
 rails test

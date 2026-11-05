@@ -2,7 +2,7 @@
 
 ## Active Storage
 
-`file_field` is designed to be used with [Active Storage](https://edgeguides.rubyonrails.org/active_storage_overview.html). You will need to confgure Active Storage for your application before using this field partial. You can find instructions for doing so in the [Rails Guides](https://edgeguides.rubyonrails.org/active_storage_overview.html#setup).
+`file_field` is designed to be used with [Active Storage](https://edgeguides.rubyonrails.org/active_storage_overview.html). You will need to configure Active Storage for your application before using this field partial. You can find instructions for doing so in the [Rails Guides](https://edgeguides.rubyonrails.org/active_storage_overview.html#setup).
 
 In addition, Bullet Train has integrated the direct-uploads feature of Active Storage. For this to work, you need to have CORS configured for your storage endpoint. You can find instructions for doing so in the [Rails Guides](https://edgeguides.rubyonrails.org/active_storage_overview.html#cross-origin-resource-sharing-cors-configuration).
 

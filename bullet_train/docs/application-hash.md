@@ -14,7 +14,7 @@ irb(main):002:0> Webhooks::Outgoing::EventType.all.class
 
 # An example from the EndpointSupport module
 def event_types
-  event_type_ids.map { |id| Webhooks::Outgoing::EventType.find(id) }
+  Webhooks::Outgoing::EventType.where(id: event_type_ids)
 end
 ```
 

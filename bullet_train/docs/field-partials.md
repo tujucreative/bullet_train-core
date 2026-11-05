@@ -76,6 +76,9 @@ Please refer to the [field partial options](/docs/field-partials/options.md) doc
 | --- | --- | --- |
 | `help` | string | Display a specific help string. |
 | `error` | string | Display a specific error string. |
+| `label` | string | Custom label. |
+| `hide_custom_error` | boolean | Highlight the field as errored but hide the message in `error`. |
+| `icon` | string | Icon HTML class, e.g. `ti ti-tablet`. |
 | `hide_label` | boolean | Hide the field label. |
 | `required` | boolean | Display an asterisk by the field label to indicate the field is required. |
 
@@ -100,25 +103,25 @@ When you're including multiple fields, you can DRY up redundant settings (e.g. `
 ```
 
 ## Field partials that integrate with third-party service providers
- - `image` makes it trivial to upload photos and videos to [Cloudinary](https://cloudinary.com) and store their resulting Cloudinary ID as an attribute of the model backing the form. To enable this field partial, sign up for Cloudinary and copy the "Cloudinary URL" they provide you with into your `config/application.yml` as `CLOUDINARY_URL`. If you use our [Heroku app.json](https://github.com/bullet-train-co/bullet_train/blob/main/app.json) to provision your production environment, this will happen in that environment automatically.
+ - `image` uploads images with Active Storage by default. If you set `CLOUDINARY_URL`, it uploads to [Cloudinary](https://cloudinary.com) instead and stores the resulting Cloudinary ID as an attribute of the model backing the form. To enable Cloudinary, sign up for Cloudinary and copy the "Cloudinary URL" they provide you with into your `config/application.yml` as `CLOUDINARY_URL`. If you use our [Heroku app.json](https://github.com/bullet-train-co/bullet_train/blob/main/app.json) to provision your production environment, this will happen in that environment automatically.
 
 ## Yaml Configuration
 The localization Yaml file (where you configure label and option values for a field) is automatically generated when you run Super Scaffolding for a model. If you haven't done this yet, the localization Yaml file for `Scaffolding::CompletelyConcrete::TangibleThing` serves as a good example. Under `en.scaffolding/completely_concrete/tangible_things.fields` you'll see definitions like this:
 
 ```yaml
 text_field_value:
-  name: &text_field_value Text Field Value
+  _: &text_field_value Text Field Value
   label: *text_field_value
   heading: *text_field_value
   api_title: *text_field_value
   api_description: *text_field_value
 ```
 
-This might look redundant at first glance, as you can see that by default the same label ("Text Field Value") is being used for both the form field label (`label`) and the heading (`heading`) of the show view and table view, and in API `api_title` and `api_descriptions` are used for documentation purposes. It's also used when the field is referred to in a validation error message. However, having these three values defined separately gives us the flexibility of defining much more user-friendly labels in the context of a form field. In my own applications, I'll frequently configure these form field labels to be much more verbose questions (in an attempt to improve the UX), but still use the shorter label as a column header on the table view and the show view:
+This might look redundant at first glance, as you can see that by default the same label ("Text Field Value") is being used for both the form field label (`label`) and the heading (`heading`) of the show view and table view, and in API `api_title` and `api_description` are used for documentation purposes. It's also used when the field is referred to in a validation error message. However, having these three values defined separately gives us the flexibility of defining much more user-friendly labels in the context of a form field. In my own applications, I'll frequently configure these form field labels to be much more verbose questions (in an attempt to improve the UX), but still use the shorter label as a column header on the table view and the show view:
 
 ```yaml
 text_field_value:
-  name: &text_field_value Text Field Value
+  _: &text_field_value Text Field Value
   label: "What should the value of this text field be?"
   heading: *text_field_value
   api_title: *text_field_value
@@ -129,7 +132,7 @@ You can also configure some placeholder text (displayed in the field when in an 
 
 ```yaml
 text_field_value:
-  name: &text_field_value Text Field Value
+  _: &text_field_value Text Field Value
   label: "What should the value of this text field be?"
   heading: *text_field_value
   api_title: *text_field_value
@@ -145,16 +148,17 @@ Certain form field partials like `buttons` and `super_select` can also have thei
 | Field Partial                                            | Data Type                 | Multiple Values? | Assignment Helpers      | JavaScript Library                                                                | Description                                                                                                                                                                   |
 |----------------------------------------------------------|---------------------------|------------------|-------------------------|-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [`address_field`](/docs/field-partials/address-field.md) | `Address`                 |                  |                         |                                                                                   | Adds a block of address fields. On change, its country super-select auto-updates the state/province/region super-select and postal/zip code field label.                      |
-| `boolean`                                                | `boolean`                 |                  | `assign_boolean`        |                                                                                   |                                                                                                                                                                               |
+| `boolean`                                                | `boolean`                 |                  | `assign_boolean`        |                                                                                   | Scaffolding alias: rendered with the `options` partial with Yes/No options.                                                                                                   |
 | [`buttons`](/docs/field-partials/buttons.md)             | `string`                  | Optionally       | `assign_checkboxes`     |                                                                                   |                                                                                                                                                                               |
 | `checkbox`                                               | `boolean`                 |                  | `assign_boolean`        |                                                                                   |                                                                                                                                                                               |
-| `image`                                                  | `string` or `attachment`* |                  |                         |                                                                                   |                                                                                                                                                                               |
+| `cloudinary_image`                                       | `string`                  |                  |                         | [Cloudinary](https://cloudinary.com)                                              | Deprecated alias kept for backwards compatibility; use `image`.                                                                                                               |
+| `image`                                                  | `string` or `attachment`* | Optionally       |                         |                                                                                   |                                                                                                                                                                               |
 | `color_picker`                                           | `string`                  |                  |                         | [pickr](https://simonwep.github.io/pickr/)                                        |                                                                                                                                                                               |
 | `date_and_time_field`                                    | `datetime`                |                  |                         | [Date Range Picker](https://www.daterangepicker.com)                              |                                                                                                                                                                               |
 | `date_field`                                             | `date`                    |                  |                         | [Date Range Picker](https://www.daterangepicker.com)                              |                                                                                                                                                                               |
 | `email_field`                                            | `string`                  |                  |                         |                                                                                   |                                                                                                                                                                               |
 | `emoji_field`                                            | `string`                  |                  |                         | [Emoji Mart](https://missiveapp.com/open/emoji-mart) | A front-end library which allows users to browse and select emojis with ease. |                                                                                                                            |
-| [`file_field`](/docs/field-partials/file-field.md)       | `attachment`              |                  |                         | [Active Storage](https://edgeguides.rubyonrails.org/active_storage_overview.html) |                                                                                                                                                                               |
+| [`file_field`](/docs/field-partials/file-field.md)       | `attachment`              | Optionally       |                         | [Active Storage](https://edgeguides.rubyonrails.org/active_storage_overview.html) |                                                                                                                                                                               |
 | `options`                                                | `string`                  | Optionally       | `assign_checkboxes`     |                                                                                   |                                                                                                                                                                               |
 | `password_field`                                         | `string`                  |                  |                         |                                                                                   |                                                                                                                                                                               |
 | `phone_field`                                            | `string`                  |                  |                         | [International Telephone Input](https://intl-tel-input.com)                       | Ensures telephone numbers are in a format that can be used by providers like Twilio.                                                                                          |
@@ -163,10 +167,9 @@ Certain form field partials like `buttons` and `super_select` can also have thei
 | `text_field`                                             | `string`                  |                  |                         |                                                                                   |                                                                                                                                                                               |
 | `number_field`                                           | `integer`                 |                  |                         |                                                                                   |                                                                                                                                                                               |
 | `trix_editor`                                            | `text`                    |                  |                         | [Trix](https://github.com/basecamp/trix)                                          | Basic HTML-powered formatting features and support for at-mentions amongst team members.                                                                                      |
-| `code_editor`                                            | `text`                    |                  |                         | [Monaco](https://microsoft.github.io/monaco-editor/)                              | A powerful code editor supporting multiple coding languages (see [languages available by default](https://github.com/microsoft/monaco-editor/tree/main/src/basic-languages)). |
+| `code_editor`                                            | `text`                    |                  |                         | [Monaco](https://microsoft.github.io/monaco-editor/)                              | A powerful code editor supporting multiple coding languages (see [languages available by default](https://github.com/microsoft/monaco-editor/tree/main/src/languages/definitions)). |
 
-* The data type for `image` fields will vary based on whether you're using Cloudinary or ActiveStorage.
-For Cloudinary you should use `string`, and for ActiveStorage you should use `attachment`.
+* Super Scaffolding picks the data type for `image` fields for you: `string` when Cloudinary is enabled (`CLOUDINARY_URL` is set), otherwise `attachment`. Multiple images are only supported with Active Storage.
 
 ## A Note On Data Types
 When creating a `multiple` option attribute, Bullet Train generates these values as a `jsonb`.
@@ -178,11 +181,11 @@ This will run the following rails command.
 ```
 rails generate model Project team:references multiple_buttons:jsonb
 ```
-## Formating `date` and `date_and_time`
+## Formatting `date` and `date_and_time`
 After Super Scaffolding a `date` or `date_and_time` field, you can pass a format for the object like so:
 
 ```erb
-<%= render 'shared/attributes/date', attribute: date_object, format: :short %>
+<%= render 'shared/attributes/date', attribute: :date_object, format: :short %>
 ```
 
 Please refer to the [Ruby on Rails documentation](https://guides.rubyonrails.org/i18n.html#adding-date-time-formats) for more information.
@@ -221,4 +224,4 @@ If you're creating custom field partials that need to respond to light/dark mode
  - [`buttons`](/docs/field-partials/buttons.md)
  - [`super_select`](/docs/field-partials/super-select.md)
  - [`file_field`](/docs/field-partials/file-field.md)
- - [`date_field` and `date_and_time_field`](/docs/field-partials/date-related-fields.md)
+ - [Customizing how `date` and `date_and_time` values are displayed](/docs/field-partials/date-related-fields.md)

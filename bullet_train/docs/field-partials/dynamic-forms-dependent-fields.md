@@ -23,7 +23,7 @@ Let's say we have a `super_select` for a "Where have you heard from us?" field. 
 
 Our goal: if `other` is selected, enable the "Other" field.
 
-We'll wire the `super_select` field with the `dependable` Stimulus controller. We'll also tie both fields using the `dependable-dependents-selector-value`. In this case, the `id` of the the `heard_from_other` field.
+We'll wire the `super_select` field with the `dependable` Stimulus controller. We'll also tie both fields using the `dependable-dependents-selector-value`. In this case, the `id` of the `heard_from_other` field.
 
 ```erb
 <%= render 'shared/fields/super_select',
@@ -40,7 +40,6 @@ We'll wire the `super_select` field with the `dependable` Stimulus controller. W
 %>
 <%= render 'shared/fields/text_field',
     method: :heard_from_other,
-    id: form.field_id(:heard_from_other),
     options: {disabled: true}
 %>
 ```
@@ -52,7 +51,6 @@ To let our `:heard_from_other` field handle the `dependable:updated` event, we'l
 ```erb
 <%= render 'shared/fields/text_field',
     method: :heard_from_other,
-    id: form.field_id(:heard_from_other),
     options: {
       disabled: true,
       data: {
@@ -124,4 +122,4 @@ We'll move the conditional on the `disabled` property. And we'll also let the `d
 <% end %>
 ```
 
-To learn more about its inner functionality, search the `bullet-train-core` repo for `dependable_controller.js`,  `dependent_fields_frame_controller.js` and `_dependent_fields_frame.html.erb`. You can also see an implementation by looking at the `_address_field.html.erb` partial.
+To learn more about its inner functionality, search the `bullet_train-core` repo for `dependable_controller.js`,  `dependent_fields_frame_controller.js` and `_dependent_fields_frame.html.erb`. You can also see an implementation by looking at the `_address_field.html.erb` partial.

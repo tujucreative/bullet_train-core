@@ -19,6 +19,16 @@ We have a convenience script in the starter repo at `bin/hack` which helps get t
 2.  The "peer repo approach" - If you already have the `core` repo cloned you can pass the `--link` option to `bin/hack` followed by a path to `core`.
     For instance `bin/hack --link ../bullet_train-core`.
 
+`bin/hack` has a few other options:
+
+* `bin/hack --link github` uses the public GitHub repo instead of a local copy.
+* `bin/hack --link <version>` pins a specific version, for example `bin/hack --link 1.45.1`.
+* `bin/hack --reset` restores the original `BULLET_TRAIN_VERSION` lines in your `Gemfile`.
+* `bin/hack --watch-js [package]` and `bin/hack --clean-js [package]` link or unlink an npm package from `local/bullet_train-core`.
+* `bin/hack --help` lists them all.
+
+By default `bin/hack` opens the `core` repo in `code`. Set the `IDE` environment variable (for example `export IDE=cursor`) to choose a different editor.
+
 In either case `bin/hack` will modify the `Gemfile` in your project and change the lines for all of the `bullet_train*` gems to point to a local copy.
 
 Lines that start like this:
@@ -33,7 +43,7 @@ Will become this:
 gem "bullet_train", path: "../bullet_train-core/bullet_train"
 ```
 
-Once that's done you can start/restart your dev server and then chnages you make within your `core` repo will be reflected in your local app.
+Once that's done you can start/restart your dev server and then changes you make within your `core` repo will be reflected in your local app.
 
 ## Linking Javascript packages
 
@@ -55,7 +65,7 @@ yarn yalc push
 After pushing you should see a line in your terminal that looks something like this:
 
 ```
-@bullet-train/fields@1.32.0 published in store.
+@bullet-train/fields@1.45.1 published in store.
 ```
 
 Next you can link that package into your local app or starter repo. (You'll be bouncing between the gem directory and your app directory, so it's convenient to use two different terminal sessions for this.)
@@ -79,9 +89,9 @@ yarn build; yarn yalc push
 Now in addition to seeing a line about the package being published to the store, you should also seem some lines about it being pushed into your local app.
 
 ```
-@bullet-train/fields@1.32.0 published in store.
-Pushing @bullet-train/fields@1.32.0 in /Users/jgreen/projects/bullet-train-co/bullet_train
-Package @bullet-train/fields@1.32.0 linked ==> /Users/jgreen/projects/bullet-train-co/bullet_train/node_modules/@bullet-train/fields
+@bullet-train/fields@1.45.1 published in store.
+Pushing @bullet-train/fields@1.45.1 in /Users/jgreen/projects/bullet-train-co/bullet_train
+Package @bullet-train/fields@1.45.1 linked ==> /Users/jgreen/projects/bullet-train-co/bullet_train/node_modules/@bullet-train/fields
 ```
 
 Each time that you rebuild and re-push the package the file watcher in your project (or starter repo) should notice the change and rebuild your assets.

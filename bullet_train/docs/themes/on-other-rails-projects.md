@@ -2,7 +2,7 @@
 
 Bullet Train themes can be installed on Vanilla Rails projects.
 
-Our main theme, called `Light`, uses `erb` partials to give you native Rails views with Hotwire-powered components. It's built on `tailwindcss`, uses `postcss` to allow for local CSS overrides and uses `esbuild` for fast javascript compilation and to support javascript-side CSS imports.
+Our main theme, called `Light`, uses `erb` partials to give you native Rails views with Hotwire-powered components. It's built on `tailwindcss` (these instructions target Tailwind CSS v3, `tailwindcss` ^3.4), uses `postcss` to allow for local CSS overrides and uses `esbuild` for fast javascript compilation and to support javascript-side CSS imports.
 
 In addition to providing a nice set of UI components, you'll get access to [`nice_partials`](https://github.com/bullet-train-co/nice_partials), Bullet Train's own lightweight answer for creating `erb` partials with ad-hoc named content areas, which we think is just the right amount of magic for making `erb`-based components.
 
@@ -22,11 +22,9 @@ Note: we have [special instructions for installing themes on Jumpstart Pro proje
 
 You'll need to make sure your Rails project is set up to use `esbuild`, `tailwindcss` and `postcss`.
 
-The easiest way to see what your project should include is to create a separate project, for reference, generated via this command:
+The Light theme requires Tailwind CSS v3 (`tailwindcss` ^3.4) installed from npm and run through `postcss`, not the `tailwindcss-rails` gem that `rails new --css tailwind` sets up.
 
-```
-rails new rails-new-esbuild-tailwind-postcss --css tailwind --javascript esbuild
-```
+The easiest way to see what your project should include is to look at the [Bullet Train starter repository](https://github.com/bullet-train-co/bullet_train). It uses `jsbundling-rails` with `esbuild` and `cssbundling-rails` with `postcss`, configured in its `package.json`, `esbuild.config.js` and `postcss.config.js`. If your app doesn't use them yet, add both gems (`bundle add jsbundling-rails cssbundling-rails`). The steps below copy the config files and update `package.json`.
 
 ### Add the theme gem
 
@@ -53,7 +51,7 @@ bundle install
 The `Light` theme requires the following npm packages to be installed
 
 ```
-yarn add @bullet-train/bullet-train @bullet-train/fields autoprefixer @rails/actiontext postcss-extend-rule postcss-import
+yarn add @bullet-train/bullet-train @bullet-train/fields tailwindcss@^3.4 @tailwindcss/forms @tailwindcss/typography postcss postcss-cli postcss-import postcss-nested postcss-css-variables autoprefixer glob @rails/actiontext
 ```
 
 Update your `app/javascript/controllers/index.js` with the following lines:
@@ -75,7 +73,8 @@ curl -L "https://raw.githubusercontent.com/bullet-train-co/bullet_train/main/tai
 curl -L "https://raw.githubusercontent.com/bullet-train-co/bullet_train/main/bin/theme" -o bin/theme
 curl -L "https://raw.githubusercontent.com/bullet-train-co/bullet_train/main/bin/link" -o bin/link
 chmod +x bin/theme bin/link
-
+mkdir -p postcss_mailer_config
+curl -L "https://raw.githubusercontent.com/bullet-train-co/bullet_train/main/postcss_mailer_config/postcss.config.js" -o postcss_mailer_config/postcss.config.js
 ```
 
 ### Update `build:css` in `package.json`
@@ -84,8 +83,13 @@ In `package.json`, replace the `build` and `build:css` entries under `scripts` w
 
 ```json
 "build": "THEME=\"light\" node esbuild.config.js",
-"build:css": "bin/link; THEME=\"light\" tailwindcss --postcss --minify -c ./tailwind.config.js -i ./app/assets/stylesheets/application.tailwind.css -o ./app/assets/builds/application.tailwind.css"
+"build:css": "bin/link; yarn light:build:css; yarn light:build:mailer:css",
+"light:build:css": "THEME=\"light\" NODE_PATH=./node_modules postcss ./app/assets/stylesheets/application.css -o ./app/assets/builds/application.light.css --config ./postcss.config.js",
+"light:build:mailer:css": "THEME=\"light\" NODE_PATH=./node_modules postcss $(bundle exec bin/theme tailwind-stylesheet light) -o ./app/assets/builds/application.mailer.light.css --config ./postcss_mailer_config"
 ```
+
+In development, `yarn light:build:css --watch` and `yarn light:build:mailer:css --watch` rebuild the stylesheets when files change. The starter's `Procfile.dev` runs both as `light-css` and `light-mailer-css`.
+
 ### Update esbuild.config.js
 
 Remove or comment out the following line from `esbuild.config.js`:
@@ -106,55 +110,36 @@ end
 
 ### Add `stylesheet_link_tag` to `<head>`
 
-Make sure you have the following three lines in your `<head>`, which should be defined in `app/views/layouts/application.html.erb`:
+Make sure you have the following four lines in your `<head>`, which should be defined in `app/views/layouts/application.html.erb`:
 
 ```erb
-<%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
-<%= stylesheet_link_tag "application.tailwind", media: "all", "data-turbo-track": "reload" %>
+<%= javascript_include_tag 'application', 'data-turbo-track': 'reload' %>
+<%= stylesheet_link_tag 'application', media: 'all', 'data-turbo-track': 'reload' %>
 <%= javascript_include_tag 'application.light', 'data-turbo-track': 'reload' %>
+<%= stylesheet_link_tag 'application.light', media: 'all', 'data-turbo-track': 'reload' %>
 ```
 
 ### Import the Theme Style Sheet
 
-To your `application.tailwind.css` file, add the following line:
+In `app/assets/stylesheets/application.css` (create it if your project doesn't have one), add the following line:
 
 ```css
-@import "$ThemeStylesheetsDir/application.css";
+@import "$ThemeStylesheet";
 ```
 
-Also be sure to replace the following lines:
+The theme's stylesheet already includes Tailwind's base, components and utilities layers, so don't add `@tailwind` directives or `tailwindcss/*` imports yourself. The `$ThemeStylesheet` alias is resolved by `postcss-import` using the `postcss-import-config.js` that ships with the theme gem (see `postcss.config.js`).
 
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-```
+Move any styles from your previous CSS entry point into it, and delete the old build output in `app/assets/builds/`.
 
-To the following lines:
-
-```css
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-```
-
-Unless this is done, `postcss-import` doesn't work correctly.
-
-### Add Themify Icons, jQuery (for now) and trix editor support
-
-Note: jQuery is needed for some of our components, but defining `window.$` won't be required soon. See PR https://github.com/bullet-train-co/bullet_train-core/pull/765
+### Add Themify Icons and trix editor support
 
 ```
-yarn add @icon/themify-icons jquery
+yarn add @icon/themify-icons
 ```
 
-To your `application.js`, add the following line:
+To your `application.js`, add the following lines:
 
 ```js
-import jquery from "jquery"
-window.jQuery = jquery
-window.$ = jquery
-
 require("@icon/themify-icons/themify-icons.css")
 
 import { trixEditor } from "@bullet-train/fields"
@@ -228,13 +213,13 @@ Add these to your `config/locales/en.yml` under `en:`
 ### For Setting the Active Color
 
 ```
-curl -L "https://raw.githubusercontent.com/bullet-train-co/bullet_train/main/initializers/theme.rb" -o initializers/theme.rb
+curl -L "https://raw.githubusercontent.com/bullet-train-co/bullet_train/main/config/initializers/theme.rb" -o config/initializers/theme.rb
 ```
 
 Add the following classes to your `html` tag for your layout:
 
 ```erb
-<html class="theme-<%= BulletTrain::Themes::Light.color %> <%= "theme-secondary-#{BulletTrain::Themes::Light.secondary_color}" if BulletTrain::Themes::Light.secondary_color %>"
+<html class="theme-<%= BulletTrain::Themes::Light.color %> <%= "theme-secondary-#{BulletTrain::Themes::Light.secondary_color}" if BulletTrain::Themes::Light.secondary_color %> <%= BulletTrain::Themes::Light.force_color_scheme_to.to_s.presence %>">
 ```
 
 ### For Switching Between Installed Themes
@@ -253,7 +238,7 @@ To change to use a different theme:
 
 1. Change the value returned by `current_theme` to the new theme name
 2. Change the name of the `THEME` env var defined in `build` and `build:css` in `package.json`
-3. Change the name of the theme in the `javascript_include_tag` in the `<head>`.
+3. Change the theme name in both the `javascript_include_tag` and `stylesheet_link_tag` (`application.<theme>`) in the `<head>`.
 
 ## 3. Using Locales for fields on new models
 

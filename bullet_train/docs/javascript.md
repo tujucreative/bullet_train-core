@@ -37,7 +37,7 @@ Bullet Train uses [esbuild](https://esbuild.github.io) to compile all local Java
 
 In development, the esbuild process that compiles JavaScript is defined as `yarn build` in `package.json`. This script also has an entry in `Procfile.dev`, so it runs automatically when you start your application with `bin/dev`, and when run in this context, it watches the filesystem and automatically recompiles anytime JavaScript files change on disk.
 
-The resulting JavaScript bundle is output to the `app/assets/builds` directory where it is picked up by the traditional Rails asset pipeline. This directory is listed in `.gitignore`, so the compiled bundles are never committed to the repository.
+The resulting JavaScript bundle is output to the `app/assets/builds` directory where it is picked up by Rails' asset pipeline (Propshaft). This directory is listed in `.gitignore`, so the compiled bundles are never committed to the repository.
 
 ## React, Vue.js, etc.
 We're not against the use of front-end JavaScript frameworks in the specific contexts where they're the best tool for the job, but we solidly subscribe to the "heavy machinery" philosophy put forward in [that original Stimulus blog post](https://medium.com/signal-v-noise/stimulus-1-0-a-modest-javascript-framework-for-the-html-you-already-have-f04307009130), and have no interest in actually supporting them.
@@ -50,7 +50,7 @@ Here are some important considerations:
 
 ### Avoid Morphing for Page Refreshes (It Breaks Form Fields)
 
-We don't recommend using [Turbo's Morphing](https://turbo.hotwired.dev/handbook/page_refreshes) for refreshing whole screens, especially not when the screen contains form fields. That's because Turbo's Morphing works by comparing and modifying the DOM in a way that breaks JavaScript-created elements. Bullet Train's field partials, however, use third-party librairies, like those created by our `super_select`, our `date_field`, and even the Trix rich-text editor, which create their own elements via JavaScript. Use Turbo's Morphing sparingly.
+We don't recommend using [Turbo's Morphing](https://turbo.hotwired.dev/handbook/page_refreshes) for refreshing whole screens, especially not when the screen contains form fields. That's because Turbo's Morphing works by comparing and modifying the DOM in a way that breaks JavaScript-created elements. Bullet Train's field partials, however, use third-party libraries, like those created by our `super_select`, our `date_field`, and even the Trix rich-text editor, which create their own elements via JavaScript. Use Turbo's Morphing sparingly.
 
 ### Reactive Page Updates with CableReady::Updatable
 
@@ -106,6 +106,8 @@ If you want your custom theme to be always light, or always dark, set the follow
 # Defaults to nil, which offers users the ability to choose their preference in Account Details.
 BulletTrain::Themes::Light.force_color_scheme_to = :light
 ```
+
+Note: when `force_color_scheme_to` is set, the color scheme preference script is not rendered, so `window.colorScheme` and the `color-scheme:changed` event are not available.
 
 ### Listening for Color Scheme Changes
 

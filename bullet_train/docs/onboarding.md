@@ -11,12 +11,16 @@ The included "user details" onboarding step is intended to collect any fields th
 
 The "user email" onboarding step is specifically used in situations where a user signs up with an OAuth provider that either doesn't supply their email address to the application or doesn't have a verified email address for the user. In this situation, we want to have an email address on their account, so we prompt them for it.
 
+### Invite Team Members (optional)
+
+When bulk invitations are enabled (`BulletTrain::Configuration.enable_bulk_invitations = true`), a user who has just created a team is shown a form to invite several collaborators at once after completing their user details. It is off by default.
+
 ## Relevant Files
 
 Each of the following files exist within their own respective Bullet Train packages. Make sure you navigate to the correct package when searching for the following files.
 
 ### Controllers
- - `ensure_onboarding_is_complete` in `bullet_train/app/controllers/account/application_controller.rb`
+ - `ensure_onboarding_is_complete` in `bullet_train-core/bullet_train/app/controllers/concerns/account/controllers/base.rb` (the framework's steps) and in your app's `app/controllers/account/application_controller.rb` (where you add your own)
  - `bullet_train-core/bullet_train/app/controllers/account/onboarding/user_details_controller.rb`
  - `bullet_train-core/bullet_train/app/controllers/account/onboarding/user_email_controller.rb`
 
@@ -35,7 +39,7 @@ Although you can implement onboarding steps from scratch, we always just copy an
 
 1. Copy, rename, and modify all of the existing onboarding controllers.
 2. Copy, rename, and modify the corresponding `edit.html.erb` view.
-3. Copy and rename the route entry in `bullet_train-core/bullet_train/config/routes.rb`.
-4. Add the appropriate gating logic in `ensure_onboarding_is_complete` in `bullet_train/app/controllers/account/application_controller.rb`
+3. Add a route for your new step inside the `namespace :onboarding` block in your app's `config/routes.rb` (model it on the entries in `bullet_train-core/bullet_train/config/routes.rb`).
+4. Add the appropriate gating logic in `ensure_onboarding_is_complete` in your app's `app/controllers/account/application_controller.rb`.
 
 Onboarding steps aren't limited to targeting `User` models. It's possible to add onboarding steps to help flesh out team `Membership` records or `Team` records as well. You can use this pattern for setting up any sort of required data for either the user or the team.

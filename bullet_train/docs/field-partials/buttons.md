@@ -2,20 +2,20 @@
 
 ## Define Available Buttons via Localization Yaml
 
-If you invoke the field partial in `app/views/account/some_class_name/_form.html.erb` like so:
+If you invoke the field partial in `app/views/account/some_class_names/_form.html.erb` like so:
 
 ```erb
 <%= render 'shared/fields/buttons', form: form, method: :enabled %>
 ```
 
-You can define the available buttons in `config/locales/en/some_class_name.en.yml` like so:
+You can define the available buttons in `config/locales/en/some_class_names.en.yml` like so:
 
 ```yaml
 en:
-  some_class_name:
+  some_class_names:
     fields:
       enabled:
-        name: &enabled Enabled
+        _: &enabled Enabled
         label: Should this item be enabled?
         heading: Enabled?
         options:

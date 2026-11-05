@@ -21,7 +21,7 @@ In order to get things working you'll need to configure the OAuth settings under
 ### Set the `STRIPE_CLIENT_ID` ENV var
 
 From the OAuth Settings page you need to grab the "Test client ID" and/or "Live client ID" depending on whether you're configuring test mode
-or live mode. Copy that value and set is as the `STRIPE_CLIENT_ID` ENV var in your environment.
+or live mode. Copy that value and set it as the `STRIPE_CLIENT_ID` ENV var in your environment.
 
 ### Enable OAuth
 
@@ -51,7 +51,7 @@ Finally you need to set the secret key. These can be found under "Developers > A
 *  [API Keys for test mode](https://dashboard.stripe.com/test/apikeys)
 *  [API Keys for production](https://dashboard.stripe.com/apikeys)
 
-Copy the "Secret key" value and set is as the `STRIPE_SECRET_KEY` ENV var in the appropriate environment.
+Copy the "Secret key" value and set it as the `STRIPE_SECRET_KEY` ENV var in the appropriate environment.
 
 ## Using Stripe Connect
 
@@ -75,3 +75,7 @@ Click the "Connect Stripe Account" button and then follow the prompts. At the en
 
 In the top menu you should now see an "Integrations" menu with a "Stripe Installations" menu item. When you go there you'll be able to
 add a new Stripe Installation. The process is pretty much the same as connecting a new account for auth purposes.
+
+### Receive webhooks for connected accounts
+
+To receive events from connected accounts, add a Connect webhook endpoint in Stripe pointing at `https://YOUR-HOST/webhooks/incoming/oauth/stripe_account_webhooks` and set its signing secret as the `STRIPE_WEBHOOKS_ACCOUNTS_ENDPOINT_SECRET` ENV var.

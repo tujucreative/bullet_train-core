@@ -1,4 +1,4 @@
-# Customizing `date_field` and `date_and_time_field` Field Partials
+# Customizing how `date` and `date_and_time` values are displayed
 
 You can customize the format in which your `Date` and `DateTime` fields appear by passing the `format` option to your render calls. You can also use `date_format` and `time_format` to accomplish the same thing.
 

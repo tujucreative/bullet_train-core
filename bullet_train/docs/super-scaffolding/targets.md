@@ -15,6 +15,8 @@ class Project < ApplicationRecord
 
   # 🚅 add has_many associations above.
 
+  # 🚅 add oauth providers above.
+
   # 🚅 add has_one associations above.
 
   # 🚅 add scopes above.
@@ -36,7 +38,7 @@ All of those comments are used by the Super Scaffolder to put things in the righ
 
 If you remove them then we won't be able to make modifications to that file, and subsequent super scaffolding commands won't work correctly.
 
-If you do remove them then you should see a warning the next time you try to add a field that requires modifications that model. (Not all attribute types do. File and Image fields are examples of ones that do.)
+If you do remove them then you should see a warning the next time you try to add a field that requires modifications to that model. (Not all attribute types do. File and Image fields are examples of ones that do.)
 
 ```
 $ rails generate super_scaffold:field Project documents:file_field{multiple}

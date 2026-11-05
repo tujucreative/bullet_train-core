@@ -41,43 +41,9 @@ Add the  `data-sortable-save-on-reorder-value="false"` param on the `sortable` r
 >
 ```
 
-### To manually fire the save action via a button
+### To save the order yourself
 
-Since the button won't be part of the `sortable` root element's descendants (all its direct descendants are sortable by default), you'll need to wrap both the `sortable` element and the save button in a new Stimulus controlled ancestor element. On the button, add a `data-action`.
-
-For instance:
-
-```html
-<div data-controller="sortable-wrapper">
-    <table>...</table>
-    <button data-action="sortable-wrapper#saveSortOrder">Save Sort Order</button>
-</div>
-```
-
-```js
-/* sortable-wrapper_controller.js */
-import { Controller } from "@hotwired/stimulus"
-
-export default class extends Controller {
-  static targets = [ "sortable" ]
-
-  saveSortOrder() {
-    if (!this.hasSortableTarget) { return }
-    this.sortableTarget.dispatchEvent(new CustomEvent("save-sort-order"))
-  }
-}
-```
-
-And on the `sortable` element, catch the `save-sort-order` event and define it as the `sortable` target for the `sortable-wrapper` controller:
-
-```html
-<tbody data-controller="sortable"
-  data-sortable-save-on-reorder-value="false"
-  data-action="save-sort-order->sortable#saveSortOrder"
-  data-sortable-wrapper-target="sortable"
-  ...
->
-```
+> **Note** The `sortable` controller doesn't listen for a manual-save event. With `data-sortable-save-on-reorder-value="false"` the new order is not persisted. To save it yourself, call the controller's `saveSortOrder(idsInOrder)` method with the ids of the rows in order. It POSTs `{ids_in_order: [...]}` to the controller's reorder path. The confirmation example below shows one way to do this.
 
 ## Events
 
@@ -88,7 +54,7 @@ The following events are dispatched when significant events related to the list 
 | Event name         | Fired when                                          |
 |--------------------|-----------------------------------------------------|
 | sortable:start     | a drag via drag handle is started                   |
-| sortable:reordered | the items in the list are reorderd during a drag    |
+| sortable:reordered | the items in the list are reordered during a drag   |
 | sortable:end       | a sortable item is released                         |
 | sortable:saved     | the new order has been persisted after a drop       |
 
@@ -99,7 +65,7 @@ These are events that we'll emit to retain some backwards compatibility with the
 | sortable:drag    | a drag via drag handle is started                  | sortable:start     |
 | sortable:dragend | a sortable item is released                        | sortable:end       |
 | sortable:drop    | a sortable item is released                        | sortable:end       |
-| sortable:shadow  | the items in the list are reorderd during a drag   | sortable:reordered |
+| sortable:shadow  | the items in the list are reordered during a drag  | sortable:reordered |
 
 **Note**: The old `dragula` based controller used to emit a few events that were particular to `dragula`. The new controller **does not** emit the following events:
 
@@ -131,17 +97,27 @@ export default class extends Controller {
   static targets = [ "sortable" ]
 
   requestConfirmation(event) {
-    const [el, target, source, sibling] = event.detail?.args
+    const [el, target, source, sibling] = event.detail.args
 
-    // sibling will be undefined if dropped in last position, taking a shortcut here
-    const areYouSure = `Are you sure you want to place ${el.dataset.name} before ${sibling.dataset.name}?`
+    // sibling will be null if dropped in last position
+    const position = sibling ? `before ${sibling.dataset.name}` : "at the end of the list"
+    const areYouSure = `Are you sure you want to place ${el.dataset.name} ${position}?`
 
     // let's suppose each <tr> in sortable has a data-name attribute
     if (confirm(areYouSure)) {
-      this.sortableTarget.dispatchEvent(new CustomEvent('save-sort-order'))
+      this.saveSortOrder()
     } else {
       this.revertToOriginalOrder()
     }
+  }
+
+  saveSortOrder() {
+    // The sortable controller's saveSortOrder takes the ids of the rows in order.
+    const idsInOrder = Array.from(this.sortableTarget.children)
+      .map((row) => parseInt(row.dataset.id))
+      .filter((id) => !isNaN(id))
+    const sortable = this.application.getControllerForElementAndIdentifier(this.sortableTarget, "sortable")
+    sortable.saveSortOrder(idsInOrder)
   }
 
   prepareForRevertOnCancel(event) {
@@ -157,12 +133,12 @@ export default class extends Controller {
 }
 ```
 
-And on the `sortable` element, catch the `sortable:end`, `sortable:start` (for catching when dragging starts) and `save-sort-order` events. Also define it as the `sortable` target for the `confirm-reorder` controller:
+And on the `sortable` element, catch the `sortable:drop` and `sortable:start` (for catching when dragging starts) events. This example uses `sortable:drop` rather than the preferred `sortable:end` because only `drop` carries the sibling element in `event.detail.args`, and `drop` doesn't fire if the item is released outside the `<tbody>`. Also define it as the `sortable` target for the `confirm-reorder` controller:
 
 ```html
 <tbody data-controller="sortable"
   data-sortable-save-on-reorder-value="false"
-  data-action="sortable:end->confirm-reorder#requestConfirmation sortable:start->confirm-reorder#prepareForRevertOnCancel save-sort-order->sortable#saveSortOrder"
+  data-action="sortable:drop->confirm-reorder#requestConfirmation sortable:start->confirm-reorder#prepareForRevertOnCancel"
   data-confirm-reorder-target="sortable"
   ...
 >
@@ -170,9 +146,9 @@ And on the `sortable` element, catch the `sortable:end`, `sortable:start` (for c
 
 ## Drag handles
 
-With the release of the new `sortable_controller` new super scaffolds will include a cell at the begining of each row with an icon as a drag handle.
+With the release of the new `sortable_controller` new super scaffolds will include a cell at the beginning of each row with an icon as a drag handle.
 
-For pre-existing super scaffolds the new controller will detect that the handles are missing and it will programatically add them to the table.
+For pre-existing super scaffolds the new controller will detect that the handles are missing and it will programmatically add them to the table.
 
 If you want more control over the handles you should update your templates to include handles, which will prevent them from being automatically added.
 
@@ -191,7 +167,7 @@ In `app/views/account/pages/_page.html.erb` you should add a `class="group"` att
 
 ### `app/views/account/pages/_index.html.erb`
 
-In `app/views/account/pages/_index.html.erb` you should add an empty `<td>` as the first cell within the `<tr>` in the `<thead>`. You probably want to set a width for that cell to make things look nice.
+In `app/views/account/pages/_index.html.erb` you should add an empty `<th>` as the first cell within the `<tr>` in the `<thead>`. You probably want to set a width for that cell to make things look nice.
 
 ```html
 <thead>

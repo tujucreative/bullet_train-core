@@ -30,7 +30,9 @@ If you're using Bullet Train for the first time, begin by learning these five im
     - Selecting "Inspect Element".
     - Looking for the `<!-- BEGIN ... -->` comment above the element you've selected.
 
-4. Figure out the full I18n translation key of any string on the page by adding `?show_locales=true` to the URL.
+    (These comments are only added in development.)
+
+4. Figure out the full I18n translation key of any string on the page by adding `?show_locales=true` to the URL (this works everywhere except production).
 
 5. Use `bin/resolve` to figure out where framework or theme things are coming from and eject them if you need to customize something locally:
 
