@@ -10,7 +10,7 @@ Our goal in Bullet Train is to improve developer experience, not reduce it, so i
 
 ## Figuring Out Class Locations
 
-Most of Bullet Train's functionality is distributed via Ruby gems, not the starter template. As a result, the power of fuzzy searching in your IDE is more limited. For example, `app/controllers/account/users_controller.rb` includes its base functionality from a concern called `Account::Users::ControllerBase`. If you try to fuzzy search for it, you'll quickly find the module isn't included in your application repository. However, you can quickly figure out which Ruby gem is providing that concern and inspect it's source by running:
+Most of Bullet Train's functionality is distributed via Ruby gems, not the starter template. As a result, the power of fuzzy searching in your IDE is more limited. For example, `app/controllers/account/users_controller.rb` includes its base functionality from a concern called `Account::Users::ControllerBase`. If you try to fuzzy search for it, you'll quickly find the module isn't included in your application repository. However, you can quickly figure out which Ruby gem is providing that concern and inspect its source by running:
 
 ```
 bin/resolve Account::Users::ControllerBase --open
@@ -32,7 +32,7 @@ bin/resolve shared/box
 
 ### Exposing Rendered Views with Annotated Views
 
-If you're looking at a rendered view in the browser, it can be hard to know which file to open in order to make a change. To help, Bullet Train enables `config.action_view.annotate_rendered_view_with_filenames` by default, so you can right click on any element you see, select "Inspect Element", and you'll see comments in the HTML source telling you which file is powering a particular portion of the view, like this:
+If you're looking at a rendered view in the browser, it can be hard to know which file to open in order to make a change. To help, Bullet Train enables `config.action_view.annotate_rendered_view_with_filenames` in development, so you can right click on any element you see, select "Inspect Element", and you'll see comments in the HTML source telling you which file is powering a particular portion of the view, like this:
 
 ```
 <!-- BEGIN /Users/andrewculver/.rbenv/versions/3.1.2/lib/ruby/gems/3.1.0/gems/bullet_train-themes-light-1.0.10/app/views/themes/light/workflow/_box.html.erb -->
@@ -81,7 +81,7 @@ You can also log all the translation keys for anything being rendered to the con
 
 #### Eject all Translations to your Application
 
-Run `rake bullet_train:themes[eject]` to put all of Bullet Train's core locales into your repository. Then you can sift through the files to keep the ones you want to customize, and remove the ones you don't need.
+Run `rake "bullet_train:eject[locales]"` (quote the argument if you use zsh) to put all of Bullet Train's core locales into your repository. Then you can sift through the files to keep the ones you want to customize, and remove the ones you don't need.
 
 #### Resolving Translation Keys with `bin/resolve`
 

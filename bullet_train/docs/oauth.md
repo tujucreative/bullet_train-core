@@ -21,7 +21,7 @@ You should be able to add many third-party OAuth providers with Super Scaffoldin
    - Third-party OAuth providers are registered at the top of this file.
  - `app/controllers/account/oauth/omniauth_callbacks_controller.rb`
    - This controller contains all the logic that executes when a user returns back to your application after working their way through the third-party OAuth provider's workflow.
- - `omniauth_callbacks` in `config/routes.rb`
+ - `omniauth_callbacks` in `config/routes/devise.rb`
    - This file just registers the above controller with Devise.
  - `app/views/devise/shared/_oauth.html.erb`
    - This partial includes all the buttons for presentation on the sign in and sign up pages.

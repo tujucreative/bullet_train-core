@@ -12,7 +12,7 @@ Over many years of successfully implementing applications with CanCanCan, it bec
 Because abilities are being evaluated on basically every request, it made sense to introduce a thin layer of caching to help speed things up. When evaluating permissions, we store a cache of the result in the `ability_cache` attribute of the `User`. By default, making changes to a model that includes the `Roles::Support` concern will invalidate that user's cache.
 
 ### Naming and Labeling
-What we call a `Role` in the domain model is referred to as “Special Privileges” in the user-facing application. You can rename this to whatever you like in `config/locales/en/roles.en.yml`.
+What we call a `Role` in the domain model is referred to as “Special Privileges” in the user-facing application. The default strings live in `roles.en.yml` in the `bullet_train` gem. To rename them, copy that file into your application as `config/locales/en/roles.en.yml` (you can eject it with `bin/resolve en.roles.label --eject`, see [Dealing with Indirection](indirection)) and change the `Special Privileges` strings.
 
 ## A Note About Pundit
 There’s nothing stopping you from utilizing Pundit in a Bullet Train project for specific hard-to-implement cases in your permissions model, but you wouldn’t want to try and replace CanCanCan with it. We do too much automatically with CanCanCan for that to be recommended. That said, in those situations where there is a permission that needs to be implemented that isn’t easily implemented with CanCanCan, consider just writing vanilla Ruby code for that purpose.

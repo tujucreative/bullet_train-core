@@ -8,7 +8,7 @@ In our experience, there is no better resource than Font Awesome Pro for finding
 
 ### 1. Set Authentication Token Environment Variable
 
-Once you buy a license for Font Awesome Pro, set `FONTAWESOME_NPM_AUTH_TOKEN` in your shell environment to be equal to your key as presented [on their instructions page](https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers). Unfortunately, it's not enough to simply set `FONTAWESOME_NPM_AUTH_TOKEN` in `config/application.yml` like you might be thinking, because that value won't be picked up when you run `yarn install`.
+Once you buy a license for Font Awesome Pro, set `FONTAWESOME_NPM_AUTH_TOKEN` in your shell environment to be equal to your key as presented [on their instructions page](https://docs.fontawesome.com/web/setup/packages/). Unfortunately, it's not enough to simply set `FONTAWESOME_NPM_AUTH_TOKEN` in `config/application.yml` like you might be thinking, because that value won't be picked up when you run `yarn install`.
 
 #### If you're using **Bash**:
 - Add `export FONTAWESOME_NPM_AUTH_TOKEN=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX` in `~/.bashrc`.
@@ -20,13 +20,16 @@ Once you buy a license for Font Awesome Pro, set `FONTAWESOME_NPM_AUTH_TOKEN` in
 
 If you're configuring this in another type of shell, please let us know what the steps are [in a new GitHub issue](https://github.com/bullet-train-co/bullet_train/issues/new) and we'll add them here for others.
 
-### 2. Add `.npmrc` Configuration
+### 2. Add Registry Configuration
 
-Create a `.npmrc` file in the root of your project if you don't already have one, and add the following to it:
+Add the following to the `.yarnrc.yml` file in the root of your project (Bullet Train uses Yarn 4, which does not read `.npmrc`):
 
-```
-@fortawesome:registry=https://npm.fontawesome.com/
-//npm.fontawesome.com/:_authToken=${FONTAWESOME_NPM_AUTH_TOKEN}
+```yaml
+npmScopes:
+  fortawesome:
+    npmAlwaysAuth: true
+    npmRegistryServer: "https://npm.fontawesome.com/"
+    npmAuthToken: ${FONTAWESOME_NPM_AUTH_TOKEN}
 ```
 
 This will pull the environment variable in, but also be compatible with the way we need to supply this value when deploying to Heroku.

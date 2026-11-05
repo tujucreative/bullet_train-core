@@ -32,32 +32,13 @@ To do this, first run:
 bin/secrets
 ```
 
-That will generate some credentails files for you.
-
-Then you'll need to set encryption keys, either in those newly generated credentials files, or you can do it via environment variables.
-
-Generate some keys by running:
+That will generate credentials files for development, test and production, including the Active Record Encryption keys (`active_record_encryption.primary_key`, `deterministic_key` and `key_derivation_salt`), along with the matching key files in `config/credentials/` (which are git-ignored, so store them somewhere safe). To inspect or edit the credentials, run:
 
 ```
-bin/rails db:encryption:init
+EDITOR='code --wait' bin/rails credentials:edit --environment development
 ```
 
-That will output something like this:
-
-```
-active_record_encryption:
-  primary_key: NLngkt...
-  deterministic_key: edpu...
-  key_derivation_salt: Bfwy...
-```
-
-Then to add them to your `development` credentials file run:
-
-```
-bin/rails credentials:edit --environment development
-```
-
-That will decrypt `config/credentials/development.yml.enc` and open it in your editor. Paste in the block of keys you generated in the previous step, save, and close the file.
+If you ever need to regenerate the keys manually, run `bin/rails db:encryption:init` and paste the output into the credentials file.
 
 If you'd rather set them via environment variables you could add something like this to `config/application.rb`:
 
