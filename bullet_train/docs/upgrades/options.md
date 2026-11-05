@@ -68,14 +68,14 @@ this process should feel fairly similar.
 
 [Read more about The Stepwise Method](/docs/upgrades)
 
-### Upgrade from any previous verison to version `1.4.0` (a modified YOLO)
+### Upgrade from any previous version to version `1.4.0` (a modified YOLO)
 
 If you're on a version prior to `1.4.0` it can be a little tricky to do a stepwise upgrade to get to `1.4.0`. It's not
 impossible (see below), but if you're feeling lucky you might start with making an attempt to upgrade your app directly to `1.4.0`.
 
 [Read more about going directly to `1.4.0`](/docs/upgrades/yolo-140.md)
 
-### Upgrade from any previous verison to version `1.3.0` (and through the `1.3.x` line)
+### Upgrade from any previous version to version `1.3.0` (and through the `1.3.x` line)
 
 Since we weren't tracking version numbers in `Gemfile` (only `Gemfile.lock`) it can be a little tricky to upgrade
 directly to `1.3.0`. With a few extra steps in the upgrade process it's (hopefully) not too terrible.

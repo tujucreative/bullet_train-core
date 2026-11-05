@@ -70,7 +70,7 @@ git commit -m "Upgrading Bullet Train."
 
 ### 5. Update `Gemfile`
 
-Now we need to handle the situation with `Gemfile.lock` that we side-stepped earlier. you should open
+Now we need to handle the situation with `Gemfile.lock` that we side-stepped earlier. You should open
 up your `Gemfile` and find this block of gems:
 
 ```ruby
@@ -122,7 +122,7 @@ gem "bullet_train-obfuscates_id", BULLET_TRAIN_VERSION
 
 # Core gems that are dependencies of gems listed above. Technically they
 # shouldn't need to be listed here, but we list them so that we can keep
-# verion numbers in sync.
+# version numbers in sync.
 gem "bullet_train-fields", BULLET_TRAIN_VERSION
 gem "bullet_train-has_uuid", BULLET_TRAIN_VERSION
 gem "bullet_train-roles", BULLET_TRAIN_VERSION
@@ -184,7 +184,7 @@ git push origin main
 git branch -d updating-bullet-train-v1.3.0
 ```
 
-Alternatively, if you're using GitHub, you can push the `updating-bullet-train-v1.3.0` branch up and create a PR from it and let your CI integration do it's thing and then merge in the PR and delete the branch there. (That's what we typically do.)
+Alternatively, if you're using GitHub, you can push the `updating-bullet-train-v1.3.0` branch up and create a PR from it and let your CI integration do its thing and then merge in the PR and delete the branch there. (That's what we typically do.)
 
 
 ## Stepping to `1.3.x`
@@ -253,7 +253,7 @@ git commit -m "Upgrading Bullet Train."
 
 ### 5. Update `Gemfile`
 
-Now we need to handle the situation with `Gemfile.lock` that we side-stepped earlier. you should open
+Now we need to handle the situation with `Gemfile.lock` that we side-stepped earlier. You should open
 up your `Gemfile` and find this line:
 
 ```ruby
@@ -279,9 +279,9 @@ git add -A
 git commit -m "Upgrading Bullet Train gems."
 ```
 
-### 5. Update `package.json``
+### 6. Update `package.json`
 
-Likewise, we'll need to manually update the version of the `@bullet_train/*` JavaScript packages in
+Likewise, we'll need to manually update the version of the `@bullet-train/*` JavaScript packages in
 `package.json`, by looking for these lines:
 
 ```json
@@ -311,7 +311,7 @@ git add -A
 git commit -m "Upgrading Bullet Train js packages."
 ```
 
-### 6. Run Tests.
+### 7. Run Tests.
 
 ```
 rails test
@@ -320,7 +320,7 @@ rails test:system
 
 If anything fails, investigate the failures and get things working again, and commit those changes.
 
-### 7. Merge into `main` and delete the branch.
+### 8. Merge into `main` and delete the branch.
 
 ```
 git checkout main
