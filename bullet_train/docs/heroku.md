@@ -1,5 +1,7 @@
 # Deploying to Heroku
 
+Bullet Train also ships a `render.yaml` and a "Deploy to Render" button (see the starter README). This page covers Heroku only.
+
 ## Taking Bullet Train for a test drive
 
 If you just want to take this project for a test drive on Heroku without starting your own application you can use this button:
@@ -12,7 +14,7 @@ The resources provisioned will cost about **$22/month**.
 
 **Please note:** The resources provisioned via `app.json` are intended to be used for quickly launching your brand new app so that you can demo it easily. When you're ready to go into production you'll want to make some changes to these resources. See the section at the bottom of this page.
 
-We also have a a demo site that you can try without needing to deploy anything. You can [sign up if you haven't tried it before](/users/sign_up) or if you can [sign in if you've already given it a test run](/users/sign_in).
+We also have a demo site that you can try without needing to deploy anything. You can [sign up if you haven't tried it before](/users/sign_up) or if you can [sign in if you've already given it a test run](/users/sign_in).
 
 ## What's Included?
 
@@ -26,8 +28,9 @@ We've included the "entry-level" service tier across the board for:
  - [Cloudinary](https://cloudinary.com) to support off-server image uploads and ImageMagick processing.
  - [Heroku Scheduler](https://elements.heroku.com/addons/scheduler) for cron jobs.
  - [Rails Autoscale](https://railsautoscale.com) for best-of-breed reactive performance monitoring.
- - [Honeybadger](https://www.honeybadger.io) for error tracking.
- - [Expedited Security](https://expeditedsecurity.com)'s [Real Email](https://elements.heroku.com/addons/realemail) to reduce accounts created with fake and unreachable emails, which will subsequently hurt your email deliverability.
+ - [Honeybadger](https://www.honeybadger.io) for error tracking (uncomment `gem "honeybadger"` in your `Gemfile` to use it).
+
+Optionally, you can add [Expedited Security](https://expeditedsecurity.com)'s [Real Email](https://elements.heroku.com/addons/realemail) add-on and set `REALEMAIL_API_KEY` to reject fake and unreachable email addresses, which will subsequently hurt your email deliverability.
 
 ## Deploying a real application
 
@@ -88,7 +91,7 @@ If you don't want to use Heroku pipelines but still want to have automated deplo
 change to `main`) then you could duplicate `ci-cd-pipeline-main.yml` to something like `ci-cd-pipeline-production.yml` and change the conditions
 under which the workflow is run.
 
-For instance if you wanted to automatically deploy to production when a new verison tag is added to your GitHub repo you could change the `on:` block
+For instance if you wanted to automatically deploy to production when a new version tag is added to your GitHub repo you could change the `on:` block
 in the workflow file to be something like this:
 
 ```
@@ -149,9 +152,9 @@ heroku certs:auto
 
 You should be done now and your app should be available at `https://app.YOURDOMAIN.COM/account` and any hits to `https://app.YOURDOMAIN.COM` (e.g. when users sign out, etc.) will be redirected to your marketing site.
 
-### 3. Configure CORS on Your S3 Bucket
+### 3. Configure CORS on Your S3 Bucket (only if you use S3)
 
-Before you can upload to your freshly provisioned S3 bucket, you need to run (on Heroku) a rake task we've created for you to set the appropriate CORS settings.
+The default `app.json` uses Cloudinary for uploads. If you switch to Amazon S3 (your own bucket, or Heroku's Bucketeer add-on), uncomment `gem "aws-sdk-s3", require: false` in your `Gemfile`, configure the `AWS_S3_*` variables (see `config/storage.yml`), and then run this rake task on Heroku to set the appropriate CORS settings:
 
 ```
 heroku run rake aws:set_cors
@@ -166,7 +169,7 @@ When you're ready to launch your app in production you probably don't want to us
 
 ### 1. Use standard dynos instead of basic
 
-To update your `web` and `worker` processes to use `standard-1` dynos instead of `basic`:
+To update your `web` and `worker` processes to use `standard-1x` dynos instead of `basic`:
 
 ```
 heroku ps:type web=standard-1x

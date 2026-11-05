@@ -6,6 +6,7 @@
  - [What is Bullet Train?](https://bullettrain.co) <i class="ti ti-new-window ml-2"></i>
  - [Getting Started](/docs/getting-started.md)
  - [Upgrades](/docs/upgrades.md)
+ - [Trademark Information](/docs/trademark.md)
 
 ## General Topics
  - [Domain Modeling](/docs/modeling.md)
@@ -48,6 +49,7 @@
  - [REST API](/docs/api.md)
  - [Zapier](/docs/zapier.md)
  - [OAuth Providers](/docs/oauth.md)
+ - [Stripe Connect](/docs/stripe-connect.md)
  - [Outgoing Webhooks](/docs/webhooks/outgoing.md)
  - [Incoming Webhooks](/docs/webhooks/incoming.md)
 
