@@ -78,6 +78,12 @@
                     <i class="fal fa-sparkles ti ti-arrow-up"></i>
                   <% end %>
                 <% end %>
+
+                <%= render 'account/shared/menu/item', url: '/docs/trademark', label: 'Trademark Information' do |p| %>
+                  <% p.icon do %>
+                    <i class="fal fa-copyright ti ti-info-alt"></i>
+                  <% end %>
+                <% end %>
               <% end %>
 
               <%= render 'account/shared/menu/section', title: 'General Topics' do %>
@@ -120,6 +126,12 @@
                 <%= render 'account/shared/menu/item', url: '/docs/i18n', label: 'Internationalization' do |p| %>
                   <% p.icon do %>
                   <i class="fa-brands fa-js ti ti-world"></i>
+                  <% end %>
+                <% end %>
+
+                <%= render 'account/shared/menu/item', url: '/docs/docker', label: 'Docker' do |p| %>
+                  <% p.icon do %>
+                    <i class="fal fa-box ti ti-package"></i>
                   <% end %>
                 <% end %>
               <% end %>
@@ -166,13 +178,13 @@
                   <% end %>
                 <% end %>
 
-                <%= render 'account/shared/menu/item', url: '/docs/application-hash.md', label: 'Application Hash' do |p| %>
+                <%= render 'account/shared/menu/item', url: '/docs/application-hash', label: 'Application Hash' do |p| %>
                   <% p.content_for :icon do %>
                     <i class="fal fa-brackets-curly ti ti-view-list-alt"></i>
                   <% end %>
                 <% end %>
 
-                <%= render 'account/shared/menu/item', url: '/docs/contributing.md', label: 'Contributing' do |p| %>
+                <%= render 'account/shared/menu/item', url: '/docs/contributing', label: 'Contributing to Bullet Train' do |p| %>
                   <% p.content_for :icon do %>
                     <i class="fal fa-github-alt ti ti-github"></i>
                   <% end %>
@@ -218,7 +230,7 @@
                   <% end %>
                 <% end %>
 
-                <%= render 'account/shared/menu/item', url: '/docs/themes', label: 'Themes' do |p| %>
+                <%= render 'account/shared/menu/item', url: '/docs/themes', label: 'Theme Engine' do |p| %>
                   <% p.icon do %>
                     <i class="fal fa-swatchbook ti ti-palette"></i>
                   <% end %>
@@ -254,7 +266,7 @@
                   <% end %>
                 <% end %>
 
-                <%= render 'account/shared/menu/item', url: '/docs/billing/usage', label: 'Usage' do |p| %>
+                <%= render 'account/shared/menu/item', url: '/docs/billing/usage', label: 'Usage Limits' do |p| %>
                   <% p.icon do %>
                     <i class="fal fa-gauge ti ti-ruler"></i>
                   <% end %>
@@ -277,6 +289,12 @@
                 <%= render 'account/shared/menu/item', url: '/docs/oauth', label: 'OAuth Providers' do |p| %>
                   <% p.icon do %>
                     <i class="fal fa-at ti ti-reload"></i>
+                  <% end %>
+                <% end %>
+
+                <%= render 'account/shared/menu/item', url: '/docs/stripe-connect', label: 'Stripe Connect' do |p| %>
+                  <% p.icon do %>
+                    <i class="fab fa-stripe-s ti ti-money"></i>
                   <% end %>
                 <% end %>
 
