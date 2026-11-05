@@ -11,7 +11,7 @@
 
 ## Continuing to use the `dragula` based sortable controller
 
-We no longer include the old `dragula` controller in the NPM package for `bullet_train-sortable` because doing so would require `dragula` to still be a hard dependency.
+The old `dragula` controller is no longer registered or exported by the NPM package for `bullet_train-sortable` (its source file is still shipped), because registering it would make `dragula` and `jquery` hard dependencies.
 
 If you want to continue using that controller you'll need to do a few things.
 
@@ -27,13 +27,15 @@ yarn add dragula jquery
 
 You can grab the old controller [from the `core` repo here](https://github.com/bullet-train-co/bullet_train-core/blob/main/bullet_train-sortable/app/javascript/controllers/dragula-sortable_controller.js).
 
-You should put it in your app at `app/javascript/controllers/dragule-sortable_controller.js`
+You should put it in your app at `app/javascript/controllers/dragula-sortable_controller.js`
 
 ### 3. Update references to the sortable controller to use `dragula-sortable`
 
 Assuming you have a sortable `Page` model the file you need to update is `app/views/account/pages/_index.html.erb`.
 
 On the `<tbody>` you need to change `data-controller="sortable"` to be `data-controller="dragula-sortable"`.
+
+Also rename the value attributes to the new identifier: `data-sortable-reorder-path-value` becomes `data-dragula-sortable-reorder-path-value` (and `data-sortable-save-on-reorder-value` becomes `data-dragula-sortable-save-on-reorder-value`). Without this the controller does nothing.
 
 If you're responding to any of the events emitted by the controller they will also need to be changed from `sortable` to `dragula-sortable`.
 
@@ -90,7 +92,7 @@ For instance:
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "dragula-sortable" ]
+  static targets = [ "sortable" ]
 
   saveSortOrder() {
     if (!this.hasSortableTarget) { return }
@@ -105,7 +107,7 @@ And on the `dragula-sortable` element, catch the `save-sort-order` event and def
 <tbody data-controller="dragula-sortable"
   data-dragula-sortable-save-on-reorder-value="false"
   data-action="save-sort-order->dragula-sortable#saveSortOrder"
-  data-dragula-sortable-wrapper-target="dragula-sortable"
+  data-dragula-sortable-wrapper-target="sortable"
   ...
 >
 ```
@@ -147,7 +149,7 @@ Add a `data-controller` attribute to the `<table>` tag that wraps the sortable `
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = [ "dragula-sortable" ]
+  static targets = [ "sortable" ]
 
   requestConfirmation(event) {
     const [el, target, source, sibling] = event.detail?.args
@@ -182,7 +184,7 @@ And on the `dragula-sortable` element, catch the `dragula-sortable:drop`, `dragu
 <tbody data-controller="dragula-sortable"
   data-dragula-sortable-save-on-reorder-value="false"
   data-action="dragula-sortable:drop->confirm-reorder#requestConfirmation dragula-sortable:drag->confirm-reorder#prepareForRevertOnCancel save-sort-order->dragula-sortable#saveSortOrder"
-  data-confirm-reorder-target="dragula-sortable"
+  data-confirm-reorder-target="sortable"
   ...
 >
 ```
