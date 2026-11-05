@@ -133,7 +133,7 @@ export default class extends Controller {
 }
 ```
 
-And on the `sortable` element, catch the `sortable:drop` and `sortable:start` (for catching when dragging starts) events. Also define it as the `sortable` target for the `confirm-reorder` controller:
+And on the `sortable` element, catch the `sortable:drop` and `sortable:start` (for catching when dragging starts) events. This example uses `sortable:drop` rather than the preferred `sortable:end` because only `drop` carries the sibling element in `event.detail.args`, and `drop` doesn't fire if the item is released outside the `<tbody>`. Also define it as the `sortable` target for the `confirm-reorder` controller:
 
 ```html
 <tbody data-controller="sortable"

@@ -43,7 +43,7 @@ For example, when bumping from "V1" to "V2":
 
 We also bump the value of `BulletTrain::Api.current_version` in `config/initializers/api.rb` so tools like Super Scaffolding know which version of your API to update going forward.
 
-The task also adds a `draw "api/v2"` line to `config/routes.rb` and a `2: V2` entry to each `config/locales/<locale>/application.<locale>.yml`. Only controllers, tests, routes and `.json.jbuilder` views are copied; your `open_api` templates are not.
+The task also adds a `draw "api/v2"` line to `config/routes.rb` and a `2: V2` entry to each `config/locales/<locale>/application.<locale>.yml`.
 
 Each API version has its own OpenAPI document at `/api/<version>/openapi.yaml`. `rake bullet_train:api:generate_static_openapi` writes `public/api/<version>/openapi.yaml` for every version from `BulletTrain::Api.initial_version` through `current_version`. See [OpenAPI Documentation](/docs/api#openapi-documentation).
 

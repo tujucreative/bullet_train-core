@@ -39,7 +39,7 @@ Most of the field partials have a native Rails form helper working underneath. P
 | `boolean` | Scaffolding alias for `options` (see the `options` row) |
 | `buttons` | [radio_button](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-radio_button) ([check_box](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-check_box) when `options[:multiple]` is `true`) |
 | `checkbox` | [check_box](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-check_box) |
-| `cloudinary_image` | [hidden_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-hidden_field) (uploads through Cloudinary's JavaScript widget; deprecated alias of `image`) |
+| `cloudinary_image` | [hidden_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-hidden_field) (uploads through Cloudinary's JavaScript widget; kept for backwards compatibility; use `image`) |
 | `file_field` | [file_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-file_field) |
 | `image` | [file_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-file_field) when using ActiveStorage (No Rails form helper is called when using Cloudinary) |
 | `color_picker` | [hidden_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-hidden_field) (Currently cannot edit this field) |

@@ -304,10 +304,10 @@ Each attribute can take options in curly braces after its type, e.g. `lead_id:su
 | Option | Description |
 |--------|-------------|
 | `{class_name=Foo}` | The model on the other side of an `_id` or `_ids` attribute. Required when it can't be inferred from the attribute name. |
-| `{source=expr}` | The body of the generated `valid_*` method for an `_id` or `_ids` attribute. Quote the braces when the expression contains a comma. |
+| `{source=expr}` | The body of the generated `valid_*` method for an `_id` or `_ids` attribute. The expression can't contain a comma or `=`, because options are split on both. |
 | `{vanilla}` | Treat an attribute ending in `_id` or `_ids` as a plain attribute, with no association magic. |
 | `{multiple}` | Allow multiple values for `buttons`, `options`, `super_select` (stored as `jsonb`), and for `file_field` and `image` (stored as `attachments`). Not supported for `image` when Cloudinary is enabled. |
-| `{required}` | Adds `validates :attribute, presence: true` to the model. The first attribute of a newly scaffolded model is always required. |
+| `{required}` | Adds `validates :attribute, presence: true` to the model. For `_id` attributes it drops `optional: true` from the `belongs_to` instead, and `file_field` is never required. The first attribute of a newly scaffolded model is always required. |
 | `{readonly}` | Leaves the field out of the form and strong parameters. See the `readonly` example in section 3. |
 | `{label=method}` | The method called on the associated records to build option labels. Defaults to `label_string`. |
 | `{language=ruby}` | The language used by a `code_editor` field. |

@@ -50,4 +50,4 @@ config.active_record.encryption.key_derivation_salt = ENV['ACTIVE_RECORD_ENCRYPT
 
 And then populate those ENV variables by whatever means you use. (Maybe setting them in `.env` or possibly exporting them directly.)
 
-After you have things working in development you'll need to follow the same process for your production environment, and any others.
+`bin/secrets` also generated the production credentials. In production, provide `config/credentials/production.key` (or set `RAILS_MASTER_KEY`) and keep it out of the repository.

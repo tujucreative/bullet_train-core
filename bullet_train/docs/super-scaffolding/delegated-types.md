@@ -191,7 +191,7 @@ def build_entryable(params = {})
 end
 ```
 
-Finally, in the [strong parameters](https://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters) of `app/controllers/api/v1/entries_controller.rb` (the account controller inherits them), _directly below_ this line:
+Finally, in the [strong parameters](https://edgeguides.rubyonrails.org/action_controller_overview.html#strong-parameters) of `app/controllers/api/v1/entries_controller.rb` (the account controller pulls them in with `include strong_parameters_from_api`), _directly below_ this line:
 
 ```ruby
 # 🚅 super scaffolding will insert new arrays above this line.

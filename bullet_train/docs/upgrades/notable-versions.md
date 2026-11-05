@@ -38,7 +38,7 @@ If you've ejected the theme stylesheets (with `rake bullet_train:themes:light:ej
 theme, compare your stylesheets with the ones in the theme gem:
 
 * `@extend` rules were replaced with `@apply` rules, so the starter repository no longer needs the `postcss-extend-rule` package.
-* The `@tailwind` directives moved out of the main stylesheet into a single imported file (`tailwindcss_import.css`).
+* The three `tailwindcss/base.css`, `components.css` and `utilities.css` files were merged into a single `tailwindcss_import.css`, which the main stylesheet now imports.
 
 
 ## v1.31.0

@@ -22,9 +22,9 @@ Note: we have [special instructions for installing themes on Jumpstart Pro proje
 
 You'll need to make sure your Rails project is set up to use `esbuild`, `tailwindcss` and `postcss`.
 
-The Light theme requires Tailwind CSS v3 (`tailwindcss` ^3.4) installed from npm and run through `postcss`. The starter does not use the `tailwindcss-rails` gem (which `rails new --css tailwind` sets up); it installs `tailwindcss` from npm and builds the stylesheets with `postcss`.
+The Light theme requires Tailwind CSS v3 (`tailwindcss` ^3.4) installed from npm and run through `postcss`, not the `tailwindcss-rails` gem that `rails new --css tailwind` sets up.
 
-The easiest way to see what your project should include is to look at the [Bullet Train starter repository](https://github.com/bullet-train-co/bullet_train). It uses `jsbundling-rails` with `esbuild` and `cssbundling-rails` with `postcss`, configured in its `package.json`, `esbuild.config.js` and `postcss.config.js`. The steps below copy those files into your project.
+The easiest way to see what your project should include is to look at the [Bullet Train starter repository](https://github.com/bullet-train-co/bullet_train). It uses `jsbundling-rails` with `esbuild` and `cssbundling-rails` with `postcss`, configured in its `package.json`, `esbuild.config.js` and `postcss.config.js`. If your app doesn't use them yet, add both gems (`bundle add jsbundling-rails cssbundling-rails`). The steps below copy the config files and update `package.json`.
 
 ### Add the theme gem
 
@@ -121,13 +121,15 @@ Make sure you have the following four lines in your `<head>`, which should be de
 
 ### Import the Theme Style Sheet
 
-In `app/assets/stylesheets/application.css`, add the following line:
+In `app/assets/stylesheets/application.css` (create it if your project doesn't have one), add the following line:
 
 ```css
 @import "$ThemeStylesheet";
 ```
 
 The theme's stylesheet already includes Tailwind's base, components and utilities layers, so don't add `@tailwind` directives or `tailwindcss/*` imports yourself. The `$ThemeStylesheet` alias is resolved by `postcss-import` using the `postcss-import-config.js` that ships with the theme gem (see `postcss.config.js`).
+
+Move any styles from your previous CSS entry point into it, and delete the old build output in `app/assets/builds/`.
 
 ### Add Themify Icons and trix editor support
 

@@ -15,13 +15,13 @@ BulletTrain::Themes::Light.secondary_color = :red
 
 Any of the [default color schemes provided by Tailwind CSS](https://v3.tailwindcss.com/docs/customizing-colors#default-color-palette) should work for the primary and secondary colors.
 
-`config/initializers/theme.rb` has a few other options:
+`config/initializers/theme.rb` also supports these options:
 
 ```ruby
 # Moves the main menu to the side. Defaults to :top.
 BulletTrain::Themes::Light.navigation = :left
 
-# Shows the logo in the account menu. To tweak it further, run `bin/resolve shared/menu/logo --eject`.
+# Shows the logo in the navigation menu of the account area. To tweak it further, run `bin/resolve shared/menu/logo --eject`.
 BulletTrain::Themes::Light.show_logo_in_account = true
 
 # Replaces the default page background classes.
@@ -121,7 +121,7 @@ To reduce duplication of code across themes, Bullet Train implements the followi
 
 This is where all of Bullet Train's standard views are contained.
 
-The Light theme is built on Tailwind CSS v3 (`tailwindcss` ^3.4), and the theme guides assume that version. Tailwind CSS v4 is not supported: the v4 upgrade shipped in Bullet Train 1.39.0 and was reverted in 1.40.0.
+The Light theme is built on Tailwind CSS v3 (`tailwindcss` ^3.4), and the theme guides assume that version. Tailwind CSS v4 is not supported: the v4 upgrade shipped in Bullet Train 1.39.0 and was reverted in 1.40.0. Use 1.41.0 or later.
 
 ## Adding a New Theme (CSS only)
 

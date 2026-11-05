@@ -224,4 +224,4 @@ If you're creating custom field partials that need to respond to light/dark mode
  - [`buttons`](/docs/field-partials/buttons.md)
  - [`super_select`](/docs/field-partials/super-select.md)
  - [`file_field`](/docs/field-partials/file-field.md)
- - [`date_field` and `date_and_time_field`](/docs/field-partials/date-related-fields.md)
+ - [Customizing how `date` and `date_and_time` values are displayed](/docs/field-partials/date-related-fields.md)

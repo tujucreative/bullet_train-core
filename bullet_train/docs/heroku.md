@@ -30,7 +30,7 @@ We've included the "entry-level" service tier across the board for:
  - [Rails Autoscale](https://railsautoscale.com) for best-of-breed reactive performance monitoring.
  - [Honeybadger](https://www.honeybadger.io) for error tracking (uncomment `gem "honeybadger"` in your `Gemfile` to use it).
 
-Optionally, you can add [Expedited Security](https://expeditedsecurity.com)'s [Real Email](https://elements.heroku.com/addons/realemail) add-on and set `REALEMAIL_API_KEY` to reject fake and unreachable email addresses, which will subsequently hurt your email deliverability.
+Optionally, you can add [Expedited Security](https://expeditedsecurity.com)'s [Real Email](https://elements.heroku.com/addons/realemail) add-on and set `REALEMAIL_API_KEY` to reject fake and unreachable email addresses, which would otherwise hurt your email deliverability.
 
 ## Deploying a real application
 

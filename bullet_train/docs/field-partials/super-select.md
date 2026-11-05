@@ -46,9 +46,11 @@ You can generate the available options using a collection of database objects by
 Instead of rendering every choice up front, you can have `super_select` fetch choices lazily from an endpoint by passing the `choices_url` option:
 
 <pre><code><%= render 'shared/fields/super_select', form: form, method: :category_id,
-  choices_url: categories_search_path %></code></pre>
+  choices_url: categories_search_path, other_options: {search: true} %></code></pre>
 
-With `choices_url`, `choices` and the localization Yaml options are ignored. Only the currently selected record (the association behind `method`, labeled with its `label_string`) is rendered initially. As the user types or scrolls, the Stimulus controller sends `GET <choices_url>?search=<term>&page=<n>` and passes the response to Select2 unchanged (no `processResults` is configured), so the endpoint must return JSON in [Select2's default format](https://select2.org/data-sources/ajax):
+Here `categories_search_path` stands for a route you define yourself. The `method` must end in `_id`, because the partial strips `_id` from it to find the association. Search is off by default, so pass `other_options: {search: true}` if you want the user to be able to type a search term.
+
+With `choices_url`, `choices` and the localization Yaml options are ignored. Only the currently selected record (the association behind `method`, labeled with its `label_string`) is rendered initially. As the user scrolls (and types, when search is enabled), the Stimulus controller sends `GET <choices_url>?search=<term>&page=<n>` and passes the response to Select2 unchanged (no `processResults` is configured), so the endpoint must return JSON in [Select2's default format](https://select2.org/data-sources/ajax):
 
 ```json
 {

@@ -321,6 +321,8 @@ In `app/assets/stylesheets/application.css` (create it if your project doesn't h
 
 The theme's stylesheet already includes Tailwind's base, components and utilities layers, so don't add `@tailwind` directives or `tailwindcss/*` imports yourself. The `$ThemeStylesheet` alias is resolved by `postcss-import` using the `postcss-import-config.js` that ships with the theme gem (see `postcss.config.js` above).
 
+If your project already has its own Tailwind entry point, either use it as the input of `light:build:css` in `package.json`, or `@import` it from `application.css` below `$ThemeStylesheet`, so your own styles keep compiling.
+
 ### Add Themify Icons and trix editor support
 
 ```

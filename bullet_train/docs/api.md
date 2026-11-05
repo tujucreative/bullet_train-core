@@ -100,7 +100,7 @@ response = client.patch("/api/v1/teams/1", {team: team}.to_json, headers)
 ```
 
 ## OpenAPI Documentation
-Bullet Train generates an OpenAPI document for each API version, served at `/api/v1/openapi.yaml` (and `/api/v2/openapi.yaml` and so on for later versions). The following rake tasks are available:
+Bullet Train generates an OpenAPI 3.1 document for each API version, served at `/api/v1/openapi.yaml`. The following rake tasks are available:
 
  - `rake bullet_train:api:generate_static_openapi` writes `public/api/<version>/openapi.yaml` for every API version, from `BulletTrain::Api.initial_version` through `current_version`. Use it to ship a static copy of your OpenAPI documents with your application.
  - `rake bullet_train:api:export_openapi_schema` writes a timestamped copy of the current version's document to `tmp/openapi/`.

@@ -22,7 +22,7 @@ We have a convenience script in the starter repo at `bin/hack` which helps get t
 `bin/hack` has a few other options:
 
 * `bin/hack --link github` uses the public GitHub repo instead of a local copy.
-* `bin/hack --link 1.45.1` pins a specific version.
+* `bin/hack --link <version>` pins a specific version, for example `bin/hack --link 1.45.1`.
 * `bin/hack --reset` restores the original `BULLET_TRAIN_VERSION` lines in your `Gemfile`.
 * `bin/hack --watch-js [package]` and `bin/hack --clean-js [package]` link or unlink an npm package from `local/bullet_train-core`.
 * `bin/hack --help` lists them all.
