@@ -96,9 +96,10 @@ The script from the previous step will output some additional environment variab
 ```
 OK, put the following in `config/application.yml` or wherever you configure your environment values:
 
-STRIPE_PRODUCT_BASIC_MONTHLY_2025_PRICE_ID: price_1QpbQSKKAAAAAAAAAAAAAAAA
-STRIPE_PRODUCT_BASIC_ANNUAL_2025_PRICE_ID: price_1QpbQSKKBBBBBBBBBBBBBBBB
-STRIPE_PRODUCT_PRO_ANNUAL_2025_PRICE_ID: price_1QpbQSKKCCCCCCCCCCCCCCCC
+STRIPE_PRODUCT_BASIC_MONTHLY_2022_PRICE_ID: price_1QpbQSKKAAAAAAAAAAAAAAAA
+STRIPE_PRODUCT_BASIC_ANNUAL_2022_PRICE_ID: price_1QpbQSKKBBBBBBBBBBBBBBBB
+STRIPE_PRODUCT_PRO_MONTHLY_2022_PRICE_ID: price_1QpbQSKKCCCCCCCCCCCCCCCC
+STRIPE_PRODUCT_PRO_ANNUAL_2022_PRICE_ID: price_1QpbQSKKDDDDDDDDDDDDDDDD
 ```
 
 ### 5. Wire Up Webhooks
@@ -170,36 +171,65 @@ Your `products.yml` should have a structure similar to the following:
 free:
   limits:
     memberships:
-      count: 1
-      enforcement: hard
+      have:
+        count: 3
+        enforcement: hard
     scaffolding/absolutely_abstract/creative_concepts:
-      count: 0
-      enforcement: hard
+      have:
+        count: 25
+        enforcement: hard
 basic:
-  price: basic_2021
-  image: "streamline-icon-idea-message.png"
+  price: basic_2022
+  image: "sparkles.png"
   limits:
     memberships:
-      count: 3
-      enforcement: hard
+      have:
+        count: null
     scaffolding/absolutely_abstract/creative_concepts:
-      count: null
+      have:
+        count: 50
+        enforcement: soft
   prices:
-    basic_2021:
+    basic_monthly_2022:
       amount: 1000
       currency: USD
       duration: 1
       interval: month
       quantity: memberships
-    basic_2021:
+      highlight: true
+      trial_days: 7
+    basic_annual_2022:
+      amount: 10000
+      currency: USD
+      duration: 1
+      interval: year
+      quantity: memberships
+      highlight: true
+pro:
+  price: pro_2022
+  image: "rocket.png"
+  limits:
+    memberships:
+      have:
+        count: 10
+        enforcement: soft
+    scaffolding/absolutely_abstract/creative_concepts:
+      have:
+        count: null
+  prices:
+    pro_monthly_2022:
       amount: 10000
       currency: USD
       duration: 1
       interval: month
-      quantity: memberships
+    pro_annual_2022:
+      amount: 100000
+      currency: USD
+      duration: 1
+      interval: year
 ```
 
-Each root level entry (i.e. `free` and `basic`) are the types of subscriptions that will be available to your customers. Each subscription has the following:
+Each root level entry (i.e. `free`, `basic` and `pro`) are the types of subscriptions that will be available to your customers. Each subscription has the following:
 
   - `price`: A unique identifier for this price
   - `image`: The product image from `assets/images/products` that is presented to the buyer from the new subscription page
@@ -211,8 +241,10 @@ Each root level entry (i.e. `free` and `basic`) are the types of subscriptions t
     - `interval`: The unit of time of the subscription (i.e. day, month, year)
     - `quantity`: The relation used to determine how many of this product are being ordered.
       - If your pricing model charges per seat, this should be set to `memberships`
-      - If you are charging a fixed rate, this field should be `1`
+      - If you are charging a fixed rate, omit this field (it defaults to a quantity of 1)
     - `highlight`: When set to true, this product will *pop out* from the other product options that are presented to the user
+    - `trial_days`: Number of free trial days for this price (optional)
+    - `allow_promotion_codes`: Allow customers to enter Stripe promotion codes at checkout (optional)
 
 There exists a relationship between `duration` and `interval` that is used to determine how often a customers card is billed. For example, if you wanted to bill a
 customer once every three months you'd have the following configuration:
@@ -248,7 +280,8 @@ bin/resolve bullet_train-billing/app/views/account/billing/subscriptions/new.htm
 Subscription translations can be retrieved directly [from github](https://github.com/bullet-train-pro/bullet_train-billing/blob/main/config/locales/en/billing/subscriptions.en.yml) and copied into `config/locales/en/billing`
 
 ```
-`curl -o config/locales/en/billing/subscriptions.en.yml https://raw.githubusercontent.com/bullet-train-pro/bullet_train-billing/refs/heads/main/config/locales/en/billing/subscriptions.en.yml`
+mkdir -p config/locales/en/billing
+curl -o config/locales/en/billing/subscriptions.en.yml https://raw.githubusercontent.com/bullet-train-pro/bullet_train-billing/refs/heads/main/config/locales/en/billing/subscriptions.en.yml
 ```
 
 ## 9. Rinse and Repeat Configuration Steps for Production

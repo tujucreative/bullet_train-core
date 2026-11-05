@@ -15,11 +15,11 @@ Importantly, if the changes you're making to your domain model are only additive
 By default, the following components in your API are created in versioned namespaces:
 
  - API controllers are in `app/controllers/api/v1` and live in an `Api::V1` module.
- - JSON views are in `app/controllers/api/v1`.
+ - JSON views are in `app/views/api/v1`.
  - Routes are in `config/routes/api/v1.rb`.
  - Tests are in `test/controllers/api/v1` and live in an `Api::V1` module.
 
-> It's also impotant to keep in mind that some dependencies of your API and API tests like models, factories, and permissions are not versioned, but as we'll cover later, this is something our approach helps you work around.
+> It's also important to keep in mind that some dependencies of your API and API tests like models, factories, and permissions are not versioned, but as we'll cover later, this is something our approach helps you work around.
 
 ## Bumping Your API Version
 
@@ -42,6 +42,10 @@ For example, when bumping from "V1" to "V2":
  - A copy of all the tests in `test/controllers/api/v1` are copied into `test/controllers/api/v2`.
 
 We also bump the value of `BulletTrain::Api.current_version` in `config/initializers/api.rb` so tools like Super Scaffolding know which version of your API to update going forward.
+
+The task also adds a `draw "api/v2"` line to `config/routes.rb` and a `2: V2` entry to each `config/locales/<locale>/application.<locale>.yml`. Only controllers, tests, routes and `.json.jbuilder` views are copied; your `open_api` templates are not.
+
+Each API version has its own OpenAPI document at `/api/<version>/openapi.yaml`. `rake bullet_train:api:generate_static_openapi` writes `public/api/<version>/openapi.yaml` for every version from `BulletTrain::Api.initial_version` through `current_version`. See [OpenAPI Documentation](/docs/api#openapi-documentation).
 
 ## How does this help?
 As a baseline, keeping a wholesale copy of the versioned API components helps lock in their behavior and protect them from change going forward. It's not a silver bullet, since unversioned dependencies (like your model, factories, and permissions) can still affect the behavior of these versioned API components, but even in that case these copied files give us a place where we can implement the logic that helps older versions of the API continue to operate even as unversioned components like our domain model continue changing.

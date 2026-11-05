@@ -1,5 +1,5 @@
 # Integrating with Zapier
-Bullet Train provides out-of-the-box support for Zapier. New Bullet Train projects include a preconfigured Zapier CLI project that is ready to `zapier deploy`.
+Bullet Train provides out-of-the-box support for Zapier. New Bullet Train projects include a preconfigured Zapier CLI project that is ready to `zapier push`.
 
 ## Background
 Zapier was designed to take advantage of an application's existing [REST API](/docs/api.md), [outgoing webhook capabilities](/docs/webhooks/outgoing.md), and OAuth2 authorization workflows. Thankfully for us, Bullet Train provides the first two and pre-configures Doorkeeper to provide the latter. We also have a smooth OAuth2 connection workflow that accounts for the mismatch between user-based OAuth2 and team-based multitenancy.
@@ -8,9 +8,10 @@ Zapier was designed to take advantage of an application's existing [REST API](/d
  - You must be developing in an environment with [tunneling enabled](/docs/tunneling.md).
 
 ## Getting Started in Development
-First, install the Zapier CLI tooling and deploy:
+First, install the Zapier CLI tooling and deploy (the Zapier project requires Node 14 or newer):
 
 ```
+npm install -g zapier-platform-cli
 cd zapier
 yarn install
 zapier login
@@ -30,7 +31,7 @@ When you do this for the first time, it will output some credentials for you to 
 ```
 cd zapier
 zapier env:set 1.0.0 \
-  BASE_URL=https://andrewculver.ngrok.io \
+  BASE_URL=https://YOUR-SUBDOMAIN.ngrok.io \
   CLIENT_ID=... \
   CLIENT_SECRET=...
 cd ..
