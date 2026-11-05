@@ -15,6 +15,19 @@ BulletTrain::Themes::Light.secondary_color = :red
 
 Any of the [default color schemes provided by Tailwind CSS](https://v3.tailwindcss.com/docs/customizing-colors#default-color-palette) should work for the primary and secondary colors.
 
+`config/initializers/theme.rb` has a few other options:
+
+```ruby
+# Moves the main menu to the side. Defaults to :top.
+BulletTrain::Themes::Light.navigation = :left
+
+# Shows the logo in the account menu. To tweak it further, run `bin/resolve shared/menu/logo --eject`.
+BulletTrain::Themes::Light.show_logo_in_account = true
+
+# Replaces the default page background classes.
+BulletTrain::Themes::Light.background = "bg-gray-100"
+```
+
 ### Dark and Light Mode
 
 Bullet Train themes include support for both dark and light color schemes. Users can toggle between dark mode, light mode, or system preference in their Account Details (accessible from the user menu). This preference is per-device and stored in the browser's `LocalStorage`.
@@ -108,9 +121,11 @@ To reduce duplication of code across themes, Bullet Train implements the followi
 
 This is where all of Bullet Train's standard views are contained.
 
+The Light theme is built on Tailwind CSS v3 (`tailwindcss` ^3.4), and the theme guides assume that version. Tailwind CSS v4 is not supported: the v4 upgrade shipped in Bullet Train 1.39.0 and was reverted in 1.40.0.
+
 ## Adding a New Theme (CSS only)
 
-The easiest way to get started customizing Bullet Train is by definiing a custom set of primary and secondary colors for your own theme.
+The easiest way to get started customizing Bullet Train is by defining a custom set of primary and secondary colors for your own theme.
 
 Open `app/assets/stylesheets/application.css` then define a new set of colors with a custom theme name. Something like this:
 
@@ -172,6 +187,12 @@ This will copy all of the standard views from `bullet_train-themes-light` to `ap
 After running this command, you will see that a few other files are edited to use this new theme. Whenever switching a theme, you will need to make the same changes to make sure your application is running with the theme of your choice.
 
 You can also pass an annotated path to a view after running `bin/resolve --interactive` to eject individual views to your application.
+
+There are a few related tasks:
+
+- `rake bullet_train:themes:light:eject_css` copies only the theme's main stylesheet (`light.tailwind.css`) into `app/assets/stylesheets/`.
+- `rake bullet_train:themes:light:clean[foo]` removes the ejected files of theme `foo` that haven't changed since ejection, and reverts the theme name in `Procfile.dev`, `package.json` and `application_helper.rb`.
+- `rake bullet_train:themes:light:release[foo]` walks you through publishing your theme as a gem named `bullet_train-themes-foo`.
 
 ## Theme Component Usage
 
