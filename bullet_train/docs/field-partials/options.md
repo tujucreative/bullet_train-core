@@ -7,7 +7,7 @@ In addition, Bullet Train provides framework-specific options which you can pass
 Some partials have specific types of `other_options` available for only that partial. However, the following `other_options` are available for all field partials, and you can pass them to a field partial like this.
 
 ```erb
-<%= render 'shared/fields/text_field' method: :attribute_name, other_options: {help: "Custom help text"} %>
+<%= render 'shared/fields/text_field', method: :attribute_name, other_options: {help: "Custom help text"} %>
 ```
 
 | Key | Description |
@@ -36,8 +36,11 @@ Most of the field partials have a native Rails form helper working underneath. P
 | Partial Name | Rails Form Helper |
 |--------------|-------------------|
 | `address_field` | [select](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-select) |
-| `boolean` | [radio_button](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-radio_button) |
+| `boolean` | Scaffolding alias for `options` (see the `options` row) |
 | `buttons` | [radio_button](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-radio_button) ([check_box](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-check_box) when `options[:multiple]` is `true`) |
+| `checkbox` | [check_box](https://api.rubyonrails.org/classes/ActionView/Helpers/FormBuilder.html#method-i-check_box) |
+| `cloudinary_image` | [hidden_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-hidden_field) (uploads through Cloudinary's JavaScript widget; deprecated alias of `image`) |
+| `file_field` | [file_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-file_field) |
 | `image` | [file_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-file_field) when using ActiveStorage (No Rails form helper is called when using Cloudinary) |
 | `color_picker` | [hidden_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-hidden_field) (Currently cannot edit this field) |
 | `date_and_time_field` | [text_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-text_field) |
@@ -51,5 +54,5 @@ Most of the field partials have a native Rails form helper working underneath. P
 | `text_area` | [text_area](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-text_area) |
 | `text_field` | [text_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-text_field) |
 | `number_field` | [number_field](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-number_field) |
-| `trix_editor` | [rich_text_editor](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-rich_text_area) |
+| `trix_editor` | [rich_text_area](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-rich_text_area) |
 | `code_editor` | [text_area](https://api.rubyonrails.org/classes/ActionView/Helpers/FormHelper.html#method-i-text_area) |
