@@ -31,7 +31,7 @@ When you do this for the first time, it will output some credentials for you to 
 ```
 cd zapier
 zapier env:set 1.0.0 \
-  BASE_URL=https://YOUR-SUBDOMAIN.ngrok.io \
+  BASE_URL=https://YOUR-DOMAIN \
   CLIENT_ID=... \
   CLIENT_SECRET=...
 cd ..

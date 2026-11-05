@@ -49,7 +49,7 @@ rails g controller BulletTrainWebhooks create
 
 You'll also want to copy Bullet Train's `BulletTrain::OutgoingWebhooks::Signature` class into your project. [You can find the current implementation here.](https://github.com/bullet-train-co/bullet_train-core/blob/main/bullet_train-outgoing_webhooks/lib/bullet_train/outgoing_webhooks/signature.rb)
 
-`Signature` reads two settings that Bullet Train defines for you, so in the receiving app add the following to `config/application.rb`:
+`Signature` reads two settings from `Rails.configuration.outgoing_webhooks`. If the receiving app is not a Bullet Train app, add the following to its `config/application.rb` (Bullet Train apps already define them, so don't override them there):
 
 ```ruby
 config.outgoing_webhooks = {webhook_headers_namespace: "X-Webhook-Bullet-Train", event_verification_tolerance_seconds: 600}
