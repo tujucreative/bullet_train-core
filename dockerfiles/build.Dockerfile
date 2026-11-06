@@ -39,7 +39,7 @@
 #
 #######################################################################################################
 ARG BULLET_TRAIN_VERSION=fake.version
-ARG FROM_IMAGE=ghcr.io/bullet-train-co/bullet_train/base:$BULLET_TRAIN_VERSION
+ARG FROM_IMAGE=ghcr.io/tujucreative/bullet_train/base:$BULLET_TRAIN_VERSION
 FROM $FROM_IMAGE AS base
 
 ARG NODE_VERSION=fake.version
