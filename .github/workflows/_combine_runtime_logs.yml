@@ -16,7 +16,7 @@ jobs:
         uses: bullet-train-co/checkout-repo-with-matching-branch@v1
         with:
           target_dir: tmp/starter
-          repository: bullet-train-co/bullet_train
+          repository: tujucreative/bullet_train
 
       - name: runtime log cache
         uses: actions/cache@v5
